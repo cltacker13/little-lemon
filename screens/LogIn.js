@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { validateName, validateEmail } from '../utils';
 
-export default function OnboardingScreen({navigation}){
-    const [firstName, onChangeFirstName] = useState('');
+export default function LogInScreen({navigation}){
     const [email, onChangeEmail] = useState('');
-    const isFirstNameValid = validateName(firstName);
+    const [password, onChangePassword] = useState('');
     const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(password);
     const isFormValid = (validateName(firstName) && validateEmail(email));
 
     return (
@@ -18,19 +18,10 @@ export default function OnboardingScreen({navigation}){
                 </View>
             </View>
             <View style={styles.main}>
-                <Text style={styles.h1}>Welcome!</Text>
-                <Text style={styles.h2}>Let us get to know you</Text>
+                <Text style={styles.h1}>Welcome Back!</Text>
+                <Text style={styles.h2}>Log into your account</Text>
                 <View style={styles.form}>
-                    <Text style={styles.inputLabel}>First Name</Text>
-                    <TextInput 
-                        style={styles.inputBox}
-                        value={firstName}
-                        onChangeText={onChangeFirstName}
-                        placeholder={'Type your first name'}
-                        keyboardType="default"
-                        textContentType="givenName"
-                    />
-                    <Text style={styles.inputLabel}>Email Address</Text>
+                <Text style={styles.inputLabel}>Email Address</Text>
                     <TextInput 
                         style={styles.inputBox}
                         value={email}
@@ -39,15 +30,25 @@ export default function OnboardingScreen({navigation}){
                         keyboardType="email-address"
                         textContentType="emailAddress"
                     />
+                    <Text style={styles.inputLabel}>Password</Text>
+                    <TextInput 
+                        style={styles.inputBox}
+                        value={password}
+                        onChangeText={onChangePassword}
+                        placeholder={'Type your password'}
+                        keyboardType="default"
+                        textContentType="password"
+                        secureTextEntry={true}
+                    />
                 </View>
                 <Pressable
                     onPress={ () => {
-                        navigation.navigate('SignUp')}
+                        navigation.navigate('Profile')}
                         //Alert.alert("Welcome to Little Lemon's Mobile Experience!")}
                     }
                     style={[styles.button, !isFormValid && styles.buttonDisabled]}
                 >
-                    <Text style={styles.buttonText}>Next</Text>
+                    <Text style={styles.buttonText}>Log In</Text>
                 </Pressable>
 
 
