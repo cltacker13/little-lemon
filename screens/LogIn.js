@@ -1,13 +1,17 @@
 import { useState } from 'react';
-import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { validateName, validateEmail } from '../utils';
+import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { validateEmail, validatePassword } from '../utils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function LogInScreen({navigation}){
     const [email, onChangeEmail] = useState('');
     const [password, onChangePassword] = useState('');
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password);
-    const isFormValid = (validateName(firstName) && validateEmail(email));
+    const isFormValid = (isEmailValid && isPasswordValid);
+
+    
 
     return (
         <View style={styles.container}>
@@ -44,7 +48,6 @@ export default function LogInScreen({navigation}){
                 <Pressable
                     onPress={ () => {
                         navigation.navigate('Profile')}
-                        //Alert.alert("Welcome to Little Lemon's Mobile Experience!")}
                     }
                     style={[styles.button, !isFormValid && styles.buttonDisabled]}
                 >

@@ -1,13 +1,31 @@
 import { useState } from 'react';
 import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { validateName, validateEmail } from '../utils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function OnboardingScreen({navigation}){
     const [firstName, onChangeFirstName] = useState('');
     const [email, onChangeEmail] = useState('');
     const isFirstNameValid = validateName(firstName);
     const isEmailValid = validateEmail(email);
-    const isFormValid = (validateName(firstName) && validateEmail(email));
+    const isFormValid = (isFirstNameValid && isEmailValid);
+
+
+    const storeData = async () => {
+        console.log('saving sign up data...');
+        try {
+          await AsyncStorage.multiSet(
+            [['firstName', firstName],
+            ['userEmail', email]]
+          )
+          console.log('onboarding data saved for',firstName);
+          navigation.navigate('SignUp');
+        } catch (error) {
+          //saving error
+          console.log('saving error at onboarding:', error);
+        }
+      };
 
     return (
         <View style={styles.container}>
@@ -42,8 +60,8 @@ export default function OnboardingScreen({navigation}){
                 </View>
                 <Pressable
                     onPress={ () => {
-                        navigation.navigate('SignUp')}
-                        //Alert.alert("Welcome to Little Lemon's Mobile Experience!")}
+                        console.log(firstName, email),
+                        storeData()}
                     }
                     style={[styles.button, !isFormValid && styles.buttonDisabled]}
                 >

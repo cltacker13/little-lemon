@@ -5,13 +5,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 //import { StatusBar } from 'expo-status-bar';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import SplashScreen from './screens/Splash';
 import OnboardingScreen from './screens/Onboarding';
 import SignUpScreen from './screens/SignUp';
 import LogInScreen from './screens/LogIn';
+import HomeScreen from './screens/Home';
 import ProfileScreen from './screens/Profile';
 
 const Stack = createNativeStackNavigator();
@@ -19,6 +19,12 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [isLoading, updateIsLoading] = useState(true);  
   const [isLoggedIn, updateIsLoggedIn] = useState(false);
+  const [userData, updateUserData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    online: '',
+  })
 
   const storeData = async () => {
     console.log('saving data...');
@@ -41,16 +47,26 @@ export default function App() {
     try {
       const firstOpenComplete = await AsyncStorage.getItem('firstOpenComplete');
       const userLoggedIn = await AsyncStorage.getItem('userLoggedIn');
+      const userFirstName = await AsyncStorage.getItem('firstName');
+      const userEmail = await AsyncStorage.getItem('userEmail');
+      const userPassword = await AsyncStorage.getItem('userPassword');
       if (firstOpenComplete !== null) {
         console.log('firstOpenedComplete:',firstOpenComplete);
         updateIsLoading(false);
         //console.log('data exists');
-        if(userLoggedIn !==null){
-          console.log('not a user');
+        if(userLoggedIn !== null){
 
           if(userLoggedIn === 'true'){
             updateIsLoggedIn(true);
-            console.log('user is logged in: ',userLoggedIn);
+            updateUserData({
+              name: userFirstName,
+              email: userEmail,
+              password: userPassword,
+              online: userLoggedIn,
+            })
+            console.log(`user ${userFirstName} is logged in: ${userLoggedIn}`);
+          } else {
+            console.log('not a user');
           }
         };
       }; 
@@ -60,7 +76,7 @@ export default function App() {
     }
   };
 
-  retrieveData();
+  //retrieveData();
   //if app is still loading from AsyncStorage
   if(isLoading) { 
     storeData();
@@ -68,33 +84,33 @@ export default function App() {
     console.log('isLoading:',isLoading);
     return <SplashScreen/>;
   };
-  //TODO: create logged in check/update
-  if(true){
-    retrieveData();
+  //TODO: create logged in check/update -- runs too many calls.
+  if(isLoggedIn){
+    //retrieveData();
     console.log('isLoggedIn:',isLoggedIn);
-    //return <OnboardingScreen />
   }
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='SignUp' screenOptions={{ headerShown: false }}>
-        {/*<Stack.Screen name='Splash' component={SplashScreen} screenOptions={{ headerShown: false }}/>*/}
-        {/*<Stack.Screen name='Onboarding' component={OnboardingScreen} />
-        <Stack.Screen name='SignUp' component={SignUpScreen} />
-        <Stack.Screen name='LogIn' component={LogInScreen} />
-        <Stack.Screen name='Profile' component={ProfileScreen} />
-  */}
-        {/*check for loading status & loggedin status*/
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+
+        {/*check for loggedin status*/
         //does not navigate between groups...idky?
-          isLoggedIn == true ? ( 
+          isLoggedIn ? ( 
             <>
+              <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="Profile" component={ProfileScreen} />
+              <Stack.Screen name="LogIn" component={LogInScreen} />
+              <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+              <Stack.Screen name="SignUp" component={SignUpScreen} />
             </>
           ) : (
             <>
               <Stack.Screen name="Onboarding" component={OnboardingScreen} />
               <Stack.Screen name="SignUp" component={SignUpScreen} />
               <Stack.Screen name="LogIn" component={LogInScreen} />
+              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="Profile" component={ProfileScreen} />
             </>
           )
         

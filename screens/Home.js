@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-export default function ProfileScreen({navigation}){
+export default function HomeScreen({navigation}){
     
     return (
         <View style={styles.container}>
@@ -27,7 +27,7 @@ export default function ProfileScreen({navigation}){
             </View>
             <View style={styles.main}>
                 <Text style={styles.h1}>Welcome Back!</Text>
-                <Text style={styles.h2}>Your Profile Page</Text>
+                <Text style={styles.h2}>Little Lemon Home Page!</Text>
                 <View>
                 <Pressable onPress={ () => {
                         navigation.navigate('Onboarding')}

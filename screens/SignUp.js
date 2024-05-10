@@ -10,21 +10,22 @@ export default function SignUpScreen({navigation}){
     const isPasswordValid = validatePassword(password);
     const isPassConfirmValid = confirmPassword(password, passConfirm);
     const isFormValid = (isPasswordValid && isPassConfirmValid);
-
-
+    
     const storeData = async () => {
         console.log('saving sign up data...');
         try {
-          await AsyncStorage.setItem(
-            'userLoggedIn', 'true'
+          await AsyncStorage.multiSet(
+            [['userLoggedIn', 'true'],
+            ['userPassword', password]]
           )
-          console.log('sign up data saved');
+          console.log('sign up data saved', password);
+          navigation.navigate('Profile'); 
         } catch (error) {
           //saving error
-          console.log('saving error at sign up');
+          console.log('saving error at sign up:', error);
         }
       };
-
+    
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -60,10 +61,9 @@ export default function SignUpScreen({navigation}){
                 </View>
                 <Pressable
                     onPress={ () => {
-                        navigation.navigate('Profile'), 
+                        console.log(password, passConfirm),
                         storeData()
                         }
-                        //Alert.alert("Welcome to Little Lemon's Mobile Experience!")}
                     }
                     style={[styles.button, !isFormValid && styles.buttonDisabled]}
                 >
