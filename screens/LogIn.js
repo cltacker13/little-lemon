@@ -5,13 +5,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function LogInScreen({navigation}){
+    console.log('Login Screen');
+
     const [email, onChangeEmail] = useState('');
     const [password, onChangePassword] = useState('');
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password);
     const isFormValid = (isEmailValid && isPasswordValid);
-
-    
 
     return (
         <View style={styles.container}>

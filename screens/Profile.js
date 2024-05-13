@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { localData, clearLocalData } from '../utils/localData';
 
 export default function ProfileScreen({navigation}){
-    
+    console.log('Profile Screen');
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -30,11 +32,12 @@ export default function ProfileScreen({navigation}){
                 <Text style={styles.h2}>Your Profile Page</Text>
                 <View>
                 <Pressable onPress={ () => {
+                        clearLocalData(),
                         navigation.navigate('Onboarding')}
                     }
-                    style={styles.profileIcon}
+                    style={styles.mainButton}
                 >
-                    <Text style={styles.buttonText}>New</Text>
+                    <Text style={styles.mainButtonText}>Log Out</Text>
                 </Pressable>
                 </View>
             </View>
@@ -133,5 +136,18 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'white',
     },*/
+    mainButton: {
+        backgroundColor: '#F4CE14',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        padding: 10,
+        width: 250,
+        borderRadius: 8,
+    },
+    mainButtonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'black',
+    },
 
 });

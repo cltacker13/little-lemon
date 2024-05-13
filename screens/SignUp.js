@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { validatePassword, confirmPassword } from '../utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function SignUpScreen({navigation}){
+    console.log('SignUp Screen');
+
     const [password, onChangePassword] = useState('');
     const [passConfirm, onChangePassConfirm] = useState('');
     const isPasswordValid = validatePassword(password);

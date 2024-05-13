@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 //import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { localData, retrieveAllLocalData, updateLocalData } from './utils/localData';
 
 import SplashScreen from './screens/Splash';
 import OnboardingScreen from './screens/Onboarding';
@@ -17,6 +18,8 @@ import ProfileScreen from './screens/Profile';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  console.log('App:');
+  
   const [isLoading, updateIsLoading] = useState(true);  
   const [isLoggedIn, updateIsLoggedIn] = useState(false);
   const [userData, updateUserData] = useState({
@@ -25,6 +28,9 @@ export default function App() {
     password: '',
     online: '',
   })
+
+  console.log('userData: ',userData);
+  console.log('localData: ',localData);
 
   const storeData = async () => {
     console.log('saving data...');
@@ -64,39 +70,54 @@ export default function App() {
               password: userPassword,
               online: userLoggedIn,
             })
+            updateLocalData(userData.name, userData.email, userData.password, userData.online);
             console.log(`user ${userFirstName} is logged in: ${userLoggedIn}`);
           } else {
             console.log('not a user');
           }
         };
+      }else{
+        storeData();
       }; 
     } catch (error) {
       //retrieving error
-      console.log('retrieving error');
+      console.log('retrieving error on App.js: ', error);
     }
   };
 
   //retrieveData();
   //if app is still loading from AsyncStorage
   if(isLoading) { 
-    storeData();
+    //storeData();
     retrieveData();
+    //retrieveAllLocalData();
     console.log('isLoading:',isLoading);
     return <SplashScreen/>;
   };
   //TODO: create logged in check/update -- runs too many calls.
   if(isLoggedIn){
     //retrieveData();
+    updateLocalData(userData.name, userData.email, userData.password, userData.online);
+    //localData.name = userData.name;
+    //localData.online = true;
     console.log('isLoggedIn:',isLoggedIn);
   }
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-
+      <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+        { //entire screen stack
+        <>
+          <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="LogIn" component={LogInScreen} />
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+        </>
+        }
         {/*check for loggedin status*/
         //does not navigate between groups...idky?
-          isLoggedIn ? ( 
+          /*isLoggedIn ? ( 
             <>
               <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -114,7 +135,7 @@ export default function App() {
             </>
           )
         
-        }
+        */}
       </Stack.Navigator>
     </NavigationContainer>
   );

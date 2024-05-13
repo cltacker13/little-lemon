@@ -1,16 +1,17 @@
 import { useState } from 'react';
-import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { validateName, validateEmail } from '../utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { localData, retrieveAllLocalData } from '../utils/localData';
 
 export default function OnboardingScreen({navigation}){
+    console.log('Onboarding Screen');
+
     const [firstName, onChangeFirstName] = useState('');
     const [email, onChangeEmail] = useState('');
     const isFirstNameValid = validateName(firstName);
     const isEmailValid = validateEmail(email);
     const isFormValid = (isFirstNameValid && isEmailValid);
-
 
     const storeData = async () => {
         console.log('saving sign up data...');
@@ -58,6 +59,18 @@ export default function OnboardingScreen({navigation}){
                         textContentType="emailAddress"
                     />
                 </View>
+                <View style={styles.main}>
+                    <Text>Already have an account?</Text>
+                    <Pressable
+                        onPress={ () => {
+                            navigation.navigate('LogIn')}
+                        }
+                        style={styles.mainButton}
+                    >
+                        <Text style={styles.mainButtonText}>Log In</Text>
+                    </Pressable>
+                </View>
+
                 <Pressable
                     onPress={ () => {
                         console.log(firstName, email),
@@ -67,7 +80,6 @@ export default function OnboardingScreen({navigation}){
                 >
                     <Text style={styles.buttonText}>Next</Text>
                 </Pressable>
-
 
             </View>
         </View>
@@ -99,6 +111,7 @@ const styles = StyleSheet.create({
     main: {
         alignItems: 'center',
         justifyContent: 'center',
+        paddingBottom: 50,
     },
     h1: {
         //fontFamily: 'karla',
@@ -142,7 +155,21 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 16,
+        fontWeight: 'bold',
         color: 'white',
+    },
+    mainButton: {
+        backgroundColor: '#F4CE14',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        padding: 10,
+        width: 250,
+        borderRadius: 8,
+    },
+    mainButtonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'black',
     },
 
 });
