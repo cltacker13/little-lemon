@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -17,38 +17,56 @@ import ProfileScreen from './screens/Profile';
 
 const Stack = createNativeStackNavigator();
 
+retrieveAllLocalData();
+
 export default function App() {
   console.log('App:');
+  //retrieveAllLocalData();
   
-  const [isLoading, updateIsLoading] = useState(true);  
-  const [isLoggedIn, updateIsLoggedIn] = useState(false);
-  const [userData, updateUserData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    online: '',
-  })
+  const [isLoggedIn, updateIsLoggedIn] = useState(localData.online);
+  const [userData, updateUserData] = useState(localData);
+
+  /*useEffect(() => {
+    (async () => {
+      try {
+        const data = await retrieveAllLocalData();
+        console.log('useEffect:',localData); 
+        if (data == !null) {
+          updateIsLoggedIn(localData.online);
+          updateUserData(localData);
+        }
+               
+      } catch (err) {
+        // Handle error 
+        Alert.alert(err.message); 
+      } 
+    })();
+  }, []);*/
+
+  //const [isLoading, updateIsLoading] = useState(true);  
+  //const [isLoggedIn, updateIsLoggedIn] = useState(localData.online);
+  //const [userData, updateUserData] = useState(localData);
 
   console.log('userData: ',userData);
   console.log('localData: ',localData);
 
-  const storeData = async () => {
+  /*const storeData = async () => {
     console.log('saving data...');
     try {
       await AsyncStorage.setItem(
         'firstOpenComplete', 'true'
       )
       //use to reset user status
-      /*await AsyncStorage.setItem(
-        'userLoggedIn', 'false'
-      )*/
+      //await AsyncStorage.setItem(
+      //  'userLoggedIn', 'false'
+      //)
       console.log('saved data');
     } catch (error) {
       //saving error
       console.log('saving error');
     }
-  };
-  const retrieveData = async () => {
+  };*/
+  /*const retrieveData = async () => {
     console.log('retrieving data...');
     try {
       const firstOpenComplete = await AsyncStorage.getItem('firstOpenComplete');
@@ -83,14 +101,15 @@ export default function App() {
       //retrieving error
       console.log('retrieving error on App.js: ', error);
     }
-  };
+  };*/
 
   //retrieveData();
+  //retrieveAllLocalData();
+/*
   //if app is still loading from AsyncStorage
   if(isLoading) { 
     //storeData();
-    retrieveData();
-    //retrieveAllLocalData();
+    //retrieveData();
     console.log('isLoading:',isLoading);
     return <SplashScreen/>;
   };
@@ -101,12 +120,13 @@ export default function App() {
     //localData.name = userData.name;
     //localData.online = true;
     console.log('isLoggedIn:',isLoggedIn);
-  }
+  }*/
+
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-        { //entire screen stack
+      <Stack.Navigator  screenOptions={{ headerShown: false }}>
+        {/* //entire screen stack initialRouteName="Home"
         <>
           <Stack.Screen name="Onboarding" component={OnboardingScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
@@ -114,32 +134,28 @@ export default function App() {
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
         </>
-        }
+        */}
         {/*check for loggedin status*/
-        //does not navigate between groups...idky?
-          /*isLoggedIn ? ( 
+        //does not navigate between groups...it 'deletes' irrelevant screen group.
+          isLoggedIn ? ( 
             <>
               <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="Profile" component={ProfileScreen} />
-              <Stack.Screen name="LogIn" component={LogInScreen} />
-              <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-              <Stack.Screen name="SignUp" component={SignUpScreen} />
             </>
           ) : (
             <>
               <Stack.Screen name="Onboarding" component={OnboardingScreen} />
               <Stack.Screen name="SignUp" component={SignUpScreen} />
               <Stack.Screen name="LogIn" component={LogInScreen} />
-              <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="Profile" component={ProfileScreen} />
             </>
           )
         
-        */}
+        }
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

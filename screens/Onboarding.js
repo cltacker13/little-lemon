@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { validateName, validateEmail } from '../utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { localData, retrieveAllLocalData } from '../utils/localData';
+//import { localData, retrieveAllLocalData } from '../utils/localData';
 
 export default function OnboardingScreen({navigation}){
     console.log('Onboarding Screen');

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { validateEmail, validatePassword } from '../utils';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+//import AsyncStorage from '@react-native-async-storage/async-storage';
+import { localData, retrieveAllLocalData, storeAllLocalData, updateLocalData } from '../utils/localData';
 
 export default function LogInScreen({navigation}){
     console.log('Login Screen');

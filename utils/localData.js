@@ -6,7 +6,7 @@ export var localData = {
     name: '',
     email: '',
     password: '',
-    online: '',
+    online: false,
 };
 export function updateLocalData(newName,newEmail,newPassword,newOnline) {
   localData = {
@@ -21,17 +21,21 @@ export function clearLocalData() {
       name: '',
       email: '',
       password: '',
-      online: '',
+      online: false,
     };
 };
 
 //not ready to use.
-export const storeAllLocalData = async () => {
+export const storeAllLocalData = async (firstOpen, loggedIn, firstName, email, password) => {
     console.log('saving data...');
     try {
-      await AsyncStorage.setItem(
-        'firstOpenComplete', 'true'
-      )
+      await AsyncStorage.multiSet([
+        ['firstOpenComplete', firstOpen],
+        ['userLoggedIn', loggedIn],
+        ['firstName', firstName],
+        ['userEmail', email],
+        ['userPassword', password]
+      ])
       //use to reset user status
       /*await AsyncStorage.setItem(
         'userLoggedIn', 'false'

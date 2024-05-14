@@ -1,6 +1,6 @@
 //import { useState } from 'react';
 //import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { localData } from '../utils/localData';
+//import { localData } from '../utils/localData';
 
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import {
@@ -32,7 +32,7 @@ const API_URL =
 const sections = ['Appetizers', 'Salads', 'Beverages'];
 
 const Item = ({ title, price }) => (
-    <View style={styles.item}>
+    <View style={styles.item} >
     <Text style={styles.title}>{title}</Text>
     <Text style={styles.title}>${price}</Text>
     </View>
