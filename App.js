@@ -17,56 +17,30 @@ import ProfileScreen from './screens/Profile';
 
 const Stack = createNativeStackNavigator();
 
-retrieveAllLocalData();
+//console.log('all local data:',retrieveAllLocalData());
 
 export default function App() {
   console.log('App:');
   //retrieveAllLocalData();
-  
+  const [isLoading, updateIsLoading] = useState(true);  
   const [isLoggedIn, updateIsLoggedIn] = useState(localData.online);
-  const [userData, updateUserData] = useState(localData);
 
-  /*useEffect(() => {
-    (async () => {
-      try {
-        const data = await retrieveAllLocalData();
-        console.log('useEffect:',localData); 
-        if (data == !null) {
-          updateIsLoggedIn(localData.online);
-          updateUserData(localData);
-        }
-               
-      } catch (err) {
-        // Handle error 
-        Alert.alert(err.message); 
-      } 
-    })();
-  }, []);*/
+  //console.log('localData: ',localData);
 
-  //const [isLoading, updateIsLoading] = useState(true);  
-  //const [isLoggedIn, updateIsLoggedIn] = useState(localData.online);
-  //const [userData, updateUserData] = useState(localData);
-
-  console.log('userData: ',userData);
-  console.log('localData: ',localData);
-
-  /*const storeData = async () => {
+  const storeData = async () => {
     console.log('saving data...');
     try {
       await AsyncStorage.setItem(
         'firstOpenComplete', 'true'
       )
-      //use to reset user status
-      //await AsyncStorage.setItem(
-      //  'userLoggedIn', 'false'
-      //)
-      console.log('saved data');
+      console.log('saved firstopen data');
+      retrieveData();
     } catch (error) {
       //saving error
       console.log('saving error');
     }
-  };*/
-  /*const retrieveData = async () => {
+  };
+  const retrieveData = async () => {
     console.log('retrieving data...');
     try {
       const firstOpenComplete = await AsyncStorage.getItem('firstOpenComplete');
@@ -74,6 +48,7 @@ export default function App() {
       const userFirstName = await AsyncStorage.getItem('firstName');
       const userEmail = await AsyncStorage.getItem('userEmail');
       const userPassword = await AsyncStorage.getItem('userPassword');
+      console.log('App retrieved:',firstOpenComplete,userLoggedIn)
       if (firstOpenComplete !== null) {
         console.log('firstOpenedComplete:',firstOpenComplete);
         updateIsLoading(false);
@@ -82,13 +57,8 @@ export default function App() {
 
           if(userLoggedIn === 'true'){
             updateIsLoggedIn(true);
-            updateUserData({
-              name: userFirstName,
-              email: userEmail,
-              password: userPassword,
-              online: userLoggedIn,
-            })
-            updateLocalData(userData.name, userData.email, userData.password, userData.online);
+            updateLocalData(userFirstName, userEmail, userPassword, userLoggedIn);
+            console.log('retrieve local data on App:',localData)
             console.log(`user ${userFirstName} is logged in: ${userLoggedIn}`);
           } else {
             console.log('not a user');
@@ -96,14 +66,15 @@ export default function App() {
         };
       }else{
         storeData();
+        console.log('new load.')
       }; 
     } catch (error) {
       //retrieving error
       console.log('retrieving error on App.js: ', error);
     }
-  };*/
+  };
 
-  //retrieveData();
+  retrieveData(); 
   //retrieveAllLocalData();
 /*
   //if app is still loading from AsyncStorage
@@ -122,10 +93,9 @@ export default function App() {
     console.log('isLoggedIn:',isLoggedIn);
   }*/
 
-
   return (
     <NavigationContainer>
-      <Stack.Navigator  screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
         {/* //entire screen stack initialRouteName="Home"
         <>
           <Stack.Screen name="Onboarding" component={OnboardingScreen} />
@@ -136,20 +106,24 @@ export default function App() {
         </>
         */}
         {/*check for loggedin status*/
-        //does not navigate between groups...it 'deletes' irrelevant screen group.
-          isLoggedIn ? ( 
-            <>
-              <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="Profile" component={ProfileScreen} />
-            </>
+        //cannot manually nav btwn groups, automatically navs based on criteria.
+          isLoading ? (
+            <Stack.Screen name="Splash" component={SplashScreen} />
           ) : (
-            <>
-              <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-              <Stack.Screen name="SignUp" component={SignUpScreen} />
-              <Stack.Screen name="LogIn" component={LogInScreen} />
-            </>
+            isLoggedIn ? ( 
+              <>
+                <Stack.Screen name="Profile" component={ProfileScreen} />
+
+                <Stack.Screen name="Home" component={HomeScreen} />
+              </>
+            ) : (
+              <>
+                <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+                <Stack.Screen name="SignUp" component={SignUpScreen} />
+                <Stack.Screen name="LogIn" component={LogInScreen} />
+              </>
+            )
           )
-        
         }
       </Stack.Navigator>
     </NavigationContainer>

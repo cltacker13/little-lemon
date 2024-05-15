@@ -68,7 +68,7 @@ export const retrieveAllLocalData = async () => {
                     online: true,
                 };
                 console.log(`user ${userFirstName} is logged in: ${userLoggedIn}`);
-            } else {
+              } else {
             console.log('not a user');
             }
           };

@@ -1,9 +1,34 @@
 import { useState } from 'react';
 import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { localData, clearLocalData } from '../utils/localData';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function ProfileScreen({navigation}){
     console.log('Profile Screen');
+
+    const clearData = async () => {
+        console.log('clearing data...');
+        try {
+            await AsyncStorage.multiRemove(['firstOpenComplete','userLoggedIn','firstName','userEmail','userPassword']);
+            clearLocalData();
+        } catch (error) {
+            //clearing error
+            console.log('clearing data error: ', error);
+        }
+    };
+    const storeOfflineStatus = async () => {
+        console.log('clearing data...');
+        try {
+            await AsyncStorage.setItem('userLoggedIn','false');
+            localData.online = false;
+            //clearLocalData();
+        } catch (error) {
+            //clearing error
+            console.log('clearing data error: ', error);
+        }
+    };
+
 
     return (
         <View style={styles.container}>
@@ -32,8 +57,11 @@ export default function ProfileScreen({navigation}){
                 <Text style={styles.h2}>Your Profile Page</Text>
                 <View>
                 <Pressable onPress={ () => {
-                        clearLocalData(),
-                        navigation.navigate('Onboarding')}
+                        //clearLocalData(),
+                        //clearData()
+                        storeOfflineStatus()
+                        //navigation.navigate('Onboarding')
+                        }
                     }
                     style={styles.mainButton}
                 >

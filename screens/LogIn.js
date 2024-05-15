@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { validateEmail, validatePassword } from '../utils';
-//import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { localData, retrieveAllLocalData, storeAllLocalData, updateLocalData } from '../utils/localData';
 
 export default function LogInScreen({navigation}){
@@ -12,6 +12,32 @@ export default function LogInScreen({navigation}){
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password);
     const isFormValid = (isEmailValid && isPasswordValid);
+
+    const storeOnlineStatus = async () => {
+        console.log('saving online status ...');
+        try {
+            const userEmail = await AsyncStorage.getItem('userEmail');
+            const userPassword = await AsyncStorage.getItem('userPassword'); 
+            if(userEmail == email && userPassword == password){    
+                try {
+                    await AsyncStorage.setItem(
+                        'userLoggedIn', 'true'
+                    )
+                    localData.online = true;
+                    console.log('saved firstopen data');
+                } catch (error) {
+                //saving error
+                    console.log('error saving online status: ', error);  
+                }
+            } else {
+                console.log('invalid login creds');
+            }
+        } catch (error) {
+          //retrieving error
+          console.log('error retreiving login creds: ', error);
+        }
+      };
+
 
     return (
         <View style={styles.container}>
@@ -47,7 +73,9 @@ export default function LogInScreen({navigation}){
                 </View>
                 <Pressable
                     onPress={ () => {
-                        navigation.navigate('Profile')}
+                        storeOnlineStatus()
+                        //navigation.navigate('Profile')
+                        }
                     }
                     style={[styles.button, !isFormValid && styles.buttonDisabled]}
                 >

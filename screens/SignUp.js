@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { validatePassword, confirmPassword } from '../utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { localData } from '../utils/localData';
 
 
 export default function SignUpScreen({navigation}){
@@ -16,12 +17,19 @@ export default function SignUpScreen({navigation}){
     const storeData = async () => {
         console.log('saving sign up data...');
         try {
-          await AsyncStorage.multiSet(
-            [['userLoggedIn', 'true'],
-            ['userPassword', password]]
-          )
-          console.log('sign up data saved', password);
-          navigation.navigate('Profile'); 
+            await AsyncStorage.multiSet(
+                [['userLoggedIn', 'true'],
+                ['userPassword', password]]
+            )
+            localData.online = true;
+            console.log('sign up data saved', password);
+            try {
+                const onlineStatus = await AsyncStorage.getItem('userLoggedIn');
+                console.log('online status',onlineStatus);
+            } catch (error) {
+                console.log('error fetching updated online status:', error);
+            }
+            //navigation.navigate('Profile'); 
         } catch (error) {
           //saving error
           console.log('saving error at sign up:', error);
