@@ -31,10 +31,10 @@ const API_URL =
 'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu-items-by-category.json';
 const sections = ['Appetizers', 'Salads', 'Beverages'];
 
-const Item = ({ title, price }) => (
-    <View style={styles.item} >
-    <Text style={styles.title}>{title}</Text>
-    <Text style={styles.title}>${price}</Text>
+const Item = ({ id, title, price }) => (
+    <View key={id} style={styles.item} >
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title}>${price}</Text>
     </View>
 );
 
@@ -180,7 +180,11 @@ export default function HomeScreen({navigation}){
                         sections={data}
                         keyExtractor={(item) => item.id}
                         renderItem={({ item }) => (
-                        <Item title={item.title} price={item.price} />
+                          <Pressable onPress={ () => {
+                            navigation.navigate('ItemDetails',{item})}
+                          }>
+                            <Item id={item.id} title={item.title} price={item.price} />
+                          </Pressable>
                         )}
                         renderSectionHeader={({ section: { title } }) => (
                         <Text style={styles.sectionHeader}>{title}</Text>
@@ -191,7 +195,6 @@ export default function HomeScreen({navigation}){
 
             </View>
         </View>
-
 
     );
 }
@@ -240,6 +243,8 @@ const styles = StyleSheet.create({
     main: {
         //alignItems: 'center',
         //justifyContent: 'center',
+        marginBottom: 50,
+
     },
     hero: {
         alignItems: 'center',

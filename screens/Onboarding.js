@@ -37,6 +37,7 @@ export default function OnboardingScreen({navigation}){
                 </View>
             </View>
             <View style={styles.main}>
+
                 <Text style={styles.h1}>Welcome!</Text>
                 <Text style={styles.h2}>Let us get to know you</Text>
                 <View style={styles.form}>
@@ -59,6 +60,7 @@ export default function OnboardingScreen({navigation}){
                         textContentType="emailAddress"
                     />
                 </View>
+
                 <View style={styles.main}>
                     <Text>Already have an account?</Text>
                     <Pressable
@@ -80,7 +82,6 @@ export default function OnboardingScreen({navigation}){
                 >
                     <Text style={styles.buttonText}>Next</Text>
                 </Pressable>
-
             </View>
         </View>
 

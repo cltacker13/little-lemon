@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { LogBox } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
@@ -14,10 +15,14 @@ import SignUpScreen from './screens/SignUp';
 import LogInScreen from './screens/LogIn';
 import HomeScreen from './screens/Home';
 import ProfileScreen from './screens/Profile';
+import ItemScreen from './screens/ItemDetails';
 
 const Stack = createNativeStackNavigator();
 
 //console.log('all local data:',retrieveAllLocalData());
+LogBox.ignoreLogs([   'Non-serializable values were found in the navigation state', 
+  //  'Each child in a list should have a unique "key" prop',
+  ]);
 
 export default function App() {
   console.log('App:');
@@ -74,7 +79,11 @@ export default function App() {
     }
   };
 
-  retrieveData(); 
+  useEffect(() => {
+    retrieveData(); 
+  },[]);
+  
+  //retrieveData();  
   //retrieveAllLocalData();
 /*
   //if app is still loading from AsyncStorage
@@ -95,7 +104,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }} >
         {/* //entire screen stack initialRouteName="Home"
         <>
           <Stack.Screen name="Onboarding" component={OnboardingScreen} />
@@ -112,15 +121,16 @@ export default function App() {
           ) : (
             isLoggedIn ? ( 
               <>
-                <Stack.Screen name="Profile" component={ProfileScreen} />
-
                 <Stack.Screen name="Home" component={HomeScreen} />
+                <Stack.Screen name="Profile" component={ProfileScreen} initialParams={{ updateIsLoggedIn }}/>
+                <Stack.Screen name="ItemDetails" component={ItemScreen} />
+
               </>
             ) : (
               <>
-                <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-                <Stack.Screen name="SignUp" component={SignUpScreen} />
-                <Stack.Screen name="LogIn" component={LogInScreen} />
+                <Stack.Screen name="Onboarding" component={OnboardingScreen} initialParams={{ updateIsLoggedIn }}/>
+                <Stack.Screen name="SignUp" component={SignUpScreen} initialParams={{ updateIsLoggedIn }}/>
+                <Stack.Screen name="LogIn" component={LogInScreen} initialParams={{ updateIsLoggedIn }}/>
               </>
             )
           )

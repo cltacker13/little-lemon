@@ -5,8 +5,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { localData } from '../utils/localData';
 
 
-export default function SignUpScreen({navigation}){
+export default function SignUpScreen({navigation, route}){
     console.log('SignUp Screen');
+    const { updateIsLoggedIn } = route.params;
 
     const [password, onChangePassword] = useState('');
     const [passConfirm, onChangePassConfirm] = useState('');
@@ -22,6 +23,7 @@ export default function SignUpScreen({navigation}){
                 ['userPassword', password]]
             )
             localData.online = true;
+            updateIsLoggedIn(true);
             console.log('sign up data saved', password);
             try {
                 const onlineStatus = await AsyncStorage.getItem('userLoggedIn');
@@ -72,7 +74,8 @@ export default function SignUpScreen({navigation}){
                 <Pressable
                     onPress={ () => {
                         console.log(password, passConfirm),
-                        storeData()
+                        storeData(),
+                        updateIsLoggedIn(true)
                         }
                     }
                     style={[styles.button, !isFormValid && styles.buttonDisabled]}
@@ -111,6 +114,8 @@ const styles = StyleSheet.create({
     main: {
         alignItems: 'center',
         justifyContent: 'center',
+        marginBottom: 50,
+
     },
     h1: {
         //fontFamily: 'karla',

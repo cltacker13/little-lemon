@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { validateEmail, validatePassword } from '../utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { localData, retrieveAllLocalData, storeAllLocalData, updateLocalData } from '../utils/localData';
 
-export default function LogInScreen({navigation}){
+export default function LogInScreen({navigation, route}){
     console.log('Login Screen');
-
+    const { updateIsLoggedIn } = route.params;
     const [email, onChangeEmail] = useState('');
     const [password, onChangePassword] = useState('');
     const isEmailValid = validateEmail(email);
@@ -24,6 +24,7 @@ export default function LogInScreen({navigation}){
                         'userLoggedIn', 'true'
                     )
                     localData.online = true;
+                    updateIsLoggedIn(true);
                     console.log('saved firstopen data');
                 } catch (error) {
                 //saving error
@@ -31,6 +32,7 @@ export default function LogInScreen({navigation}){
                 }
             } else {
                 console.log('invalid login creds');
+                Alert.alert('Invalid Email & Password', 'Please try again with valid email and password.')
             }
         } catch (error) {
           //retrieving error
@@ -113,6 +115,8 @@ const styles = StyleSheet.create({
     main: {
         alignItems: 'center',
         justifyContent: 'center',
+        marginBottom: 50,
+
     },
     h1: {
         //fontFamily: 'karla',
