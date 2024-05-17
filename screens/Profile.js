@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import CheckBox from 'expo-checkbox';
-//import CheckBox from '@react-native-community/checkbox';
 import { localData, clearLocalData } from '../utils/localData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { validateName, validateEmail, validateUSPhone } from '../utils';
-
+import { MainHeader } from './components/Header';
 
 export default function ProfileScreen({navigation, route}){
     console.log('Profile Screen');
@@ -34,13 +33,17 @@ export default function ProfileScreen({navigation, route}){
         newsletter: true,
     });*/
 
-    const isFirstNameValid = validateName(firstName);
-    const isLastNameValid = validateName(lastName);
-    const isEmailValid = validateEmail(email);
-    const isPhoneValid = validateUSPhone(phone);
+    const isFirstNameValid = (firstName != '' && validateName(firstName));
+    const isLastNameValid = (lastName != '' && validateName(lastName));
+    const isEmailValid = (email != '' && validateEmail(email));
+    const isPhoneValid = (phone != '' && validateUSPhone(phone));
     const isFormValid = (isFirstNameValid && isLastNameValid && isEmailValid && isPhoneValid);
+    //validation for phone number format is an issue.
+    console.log(phone,num,validateUSPhone(phone));
+    console.log(isFirstNameValid, isLastNameValid, isEmailValid, isPhoneValid);
     console.log('Form Valid:',isFormValid);
     /*if(firstName != '' || lastName != '' || email != '' || phone != ''){
+        (isFirstNameValid && isLastNameValid && isEmailValid && isPhoneValid);    
     };*/
 
     /*const clearData = async () => {
@@ -119,26 +122,7 @@ export default function ProfileScreen({navigation, route}){
 
     return (
         <ScrollView style={styles.container}>
-            <View style={styles.header}>
-                <Pressable onPress={ () => {
-                        navigation.navigate('Home')}
-                    }
-                    style={styles.profileIcon}
-                >
-                    <Text style={styles.buttonText}>Nav</Text>
-                </Pressable>
-                <View style={styles.imageContainer}>
-                    <Image source={require("../assets/ll-images/Logo.png")} 
-                    style={styles.logo}/>
-                </View>
-                <Pressable onPress={ () => {
-                        navigation.navigate('Profile')}
-                    }
-                    style={styles.profileIcon}
-                >
-                    <Text style={styles.buttonText}>You</Text>
-                </Pressable>
-            </View>
+            <MainHeader navigation={navigation} route={route}/>
             <View style={styles.main}>
                 <Text style={styles.h1}>Personal Information</Text>
                 <View style={styles.avatarSection}>
@@ -205,6 +189,7 @@ export default function ProfileScreen({navigation, route}){
                         <CheckBox
                             value={orderStatus}
                             onValueChange={toggleOrderStatus}
+                            color={'#495E57'}
                             style={styles.checkbox}
                         />
                         <Text style={styles.inputLabel}>Order Status</Text>
@@ -213,6 +198,7 @@ export default function ProfileScreen({navigation, route}){
                         <CheckBox
                             value={passwordChanges}
                             onValueChange={togglePasswordChanges}
+                            color={'#495E57'}
                             style={styles.checkbox}
                         />
                         <Text style={styles.inputLabel}>Password Changes</Text>
@@ -221,6 +207,7 @@ export default function ProfileScreen({navigation, route}){
                         <CheckBox
                             value={specialOffers}
                             onValueChange={toggleSpecialOffers}
+                            color={'#495E57'}
                             style={styles.checkbox}
                         />
                         <Text style={styles.inputLabel}>Special Offers</Text>
@@ -229,6 +216,7 @@ export default function ProfileScreen({navigation, route}){
                         <CheckBox
                             value={newsletter}
                             onValueChange={toggleNewsletter}
+                            color={'#495E57'}
                             style={styles.checkbox}
                         />
                         <Text style={styles.inputLabel}>Newsletter</Text>
@@ -391,7 +379,7 @@ const styles = StyleSheet.create({
         padding: 8,
     },
     buttonDisabled: {
-        backgroundColor: 'grey',
+        backgroundColor: '#495E57',
         opacity: 0.5,
     },
     buttonText: {

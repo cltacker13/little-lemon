@@ -32,7 +32,7 @@ export default function OnboardingScreen({navigation}){
         <View style={styles.container}>
             <View style={styles.header}>
                 <View style={styles.imageContainer}>
-                    <Image source={require("../assets/ll-images/Logo.png")} 
+                    <Image source={require('./assets/Logo.png')} 
                     style={styles.logo}/>
                 </View>
             </View>

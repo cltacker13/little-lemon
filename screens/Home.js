@@ -25,6 +25,7 @@ import {
 } from '../utils/database';
 import Filters from '../utils/filters';
 import { getSectionListData, useUpdateEffect } from '../utils/utils';
+import { MainHeader } from './components/Header';
 
 //pulled from menu page of previous project
 const API_URL =
@@ -134,27 +135,27 @@ export default function HomeScreen({navigation}){
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Pressable onPress={ () => {
-                        navigation.navigate('Home')}
-                    }
-                    style={styles.profileIcon}
-                >
-                    <Text style={styles.buttonText}>Nav</Text>
-                </Pressable>
-                <View style={styles.imageContainer}>
-                    <Image source={require("../assets/ll-images/Logo.png")} 
-                    style={styles.logo}/>
-                </View>
-                <Pressable onPress={ () => {
-                        navigation.navigate('Profile')}
-                    }
-                    style={styles.profileIcon}
-                >
-                    <Text style={styles.buttonText}>You</Text>
-                </Pressable>
+          <View style={styles.header}>
+            <Pressable onPress={ () => {
+                    navigation.navigate('Home')}
+                }
+                style={styles.profileIcon}
+            >
+                <Text style={styles.buttonText}>Nav</Text>
+            </Pressable>
+            <View style={styles.imageContainer}>
+                <Image source={require('./assets/Logo.png')} 
+                style={styles.logo}/>
             </View>
-            <View style={styles.main}>
+            <Pressable onPress={ () => {
+                    navigation.navigate('Profile')}
+                }
+                style={styles.profileIcon}
+            >
+                <Text style={styles.buttonText}>You</Text>
+            </Pressable>
+          </View>
+          <View style={styles.main}>
                 <View style={styles.hero}>
                     <Text style={styles.h1}>Welcome Back!</Text>
                     <Text style={styles.h2}>Little Lemon Home Page!</Text>

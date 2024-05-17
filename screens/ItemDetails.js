@@ -16,7 +16,7 @@ export default function ItemScreen({navigation, route}){
                     <Text style={styles.buttonText}>Nav</Text>
                 </Pressable>
                 <View style={styles.imageContainer}>
-                    <Image source={require("../assets/ll-images/Logo.png")} 
+                    <Image source={require('./assets/Logo.png')} 
                     style={styles.logo}/>
                 </View>
                 <Pressable onPress={ () => {
