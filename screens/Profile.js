@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import CheckBox from 'expo-checkbox';
+//import CheckBox from '@react-native-community/checkbox';
 import { localData, clearLocalData } from '../utils/localData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { validateName, validateEmail, validateUSPhone } from '../utils';
@@ -14,11 +16,17 @@ export default function ProfileScreen({navigation, route}){
     const [lname, updateLname] = useState('');
     const [mail, updateMail] = useState('');
     const [num, updateNum] = useState('');
+    console.log('at load retrieved:',fname,lname,mail,num);
     //form edits
     const [firstName, onChangeFirstName] = useState(fname);
     const [lastName, onChangeLastName] = useState(lname);
     const [email, onChangeEmail] = useState(mail);
     const [phone, onChangePhone] = useState(num);
+    console.log('at load form:',firstName,lastName,email,phone);
+    const [orderStatus, toggleOrderStatus] = useState(true);
+    const [passwordChanges, togglePasswordChanges] = useState(true);
+    const [specialOffers, toggleSpecialOffers] = useState(true);
+    const [newsletter, toggleNewsletter] = useState(true);
     /*const [notifications, updateNotifications] = useState({
         orderStatus: true,
         passwordChanges: true,
@@ -31,6 +39,9 @@ export default function ProfileScreen({navigation, route}){
     const isEmailValid = validateEmail(email);
     const isPhoneValid = validateUSPhone(phone);
     const isFormValid = (isFirstNameValid && isLastNameValid && isEmailValid && isPhoneValid);
+    console.log('Form Valid:',isFormValid);
+    /*if(firstName != '' || lastName != '' || email != '' || phone != ''){
+    };*/
 
     /*const clearData = async () => {
         console.log('clearing data...');
@@ -64,11 +75,11 @@ export default function ProfileScreen({navigation, route}){
             const userEmail = await AsyncStorage.getItem('userEmail');
             const userPhone = await AsyncStorage.getItem('phoneNumber');
             //const userPassword = await AsyncStorage.getItem('userPassword');
-            updateFname(userFirstName);
+            updateFname(userFirstName); 
             updateLname(userLastName);
             updateMail(userEmail);
             updateNum(userPhone);
-            console.log('user profile:',userFirstName, userLastName, userEmail, userPhone)
+            console.log('user profile:', userFirstName, userLastName, userEmail, userPhone)
         } catch (error) {
             console.log('retrieving user profile data error:', error)
         }
@@ -76,19 +87,34 @@ export default function ProfileScreen({navigation, route}){
     const storeAllUserProfileData = async () => {
         console.log('storing all profile data');
         console.log('setting values:', firstName, lastName, email, phone)
-        //multiset function errors... idky
-        try {
-            await AsyncStorage.multiSet([
-                ['firstName', firstName],
-                ['lastName', lastName]
-                ['userEmail', email],
-                ['phoneNumber', phone]
-            ])
-        } catch (error) {
-            console.log('error storing user profile data:', error)
-        }
+        if(firstName != '' || lastName != '' || email != '' || phone != ''){
+           //edits made 
+           try {
+                firstName != '' ? await AsyncStorage.setItem('firstName', firstName) : console.log('no first name change');
+                lastName != '' ? await AsyncStorage.setItem('lastName', lastName) : console.log('no last name change');
+                email != '' ? await AsyncStorage.setItem('userEmail', email) : console.log('no email change');
+                phone != '' ? await AsyncStorage.setItem('phoneNumber', phone) : console.log('no phone number change');
+                
+                Alert.alert('Updated','Changes have been saved.')
+                
+            } catch (error) {
+                console.log('error storing user profile data:', error)
+            }
+        }else{
+            console.log('No changes to save.');
+        };
     }
     
+    function clearFormChanges(){
+        //clearing form changes.
+        console.log('clearing form changes.')
+        onChangeFirstName(fname);
+        onChangeLastName(lname);
+        onChangeEmail(mail);
+        onChangePhone(num);
+    }
+
+
     retrieveUserProfileData();
 
     return (
@@ -115,9 +141,27 @@ export default function ProfileScreen({navigation, route}){
             </View>
             <View style={styles.main}>
                 <Text style={styles.h1}>Personal Information</Text>
-                <Text>Avatar</Text>
-                <View style={styles.profileIcon}>
-                    <Text>You</Text>
+                <View style={styles.avatarSection}>
+                    <Text style={styles.inputLabel}>Avatar</Text>
+                    <View style={styles.buttonRow}>
+                        <View style={styles.avatarIcon}></View>
+                        <Pressable onPress={ () => {
+                                console.log('update Avatar icon');
+                                }
+                            }
+                            style={styles.updateButton}
+                            >
+                            <Text style={styles.updateButtonText}>Update</Text>
+                        </Pressable>
+                        <Pressable onPress={ () => {
+                                console.log('remove Avatar icon');
+                                }
+                            }
+                            style={styles.cancelButton}
+                            >
+                            <Text style={styles.cancelButtonText}>Remove</Text>
+                        </Pressable>
+                    </View>
                 </View>
                 <View style={styles.form}>
                     <Text style={styles.inputLabel}>First Name</Text>
@@ -157,20 +201,58 @@ export default function ProfileScreen({navigation, route}){
                         textContentType="telephoneNumber"
                     />
                     <Text style={styles.h2}>Email Notifications</Text>
-                    <Text style={styles.inputLabel}>Order Status</Text>
-                    <Text style={styles.inputLabel}>Password Changes</Text>
-                    <Text style={styles.inputLabel}>Special Offers</Text>
-                    <Text style={styles.inputLabel}>Newsletter</Text>
-                    <Pressable onPress={ () => {
-                            storeAllUserProfileData()
+                    <View style={styles.checkboxRow}>
+                        <CheckBox
+                            value={orderStatus}
+                            onValueChange={toggleOrderStatus}
+                            style={styles.checkbox}
+                        />
+                        <Text style={styles.inputLabel}>Order Status</Text>
+                    </View>
+                    <View style={styles.checkboxRow}>
+                        <CheckBox
+                            value={passwordChanges}
+                            onValueChange={togglePasswordChanges}
+                            style={styles.checkbox}
+                        />
+                        <Text style={styles.inputLabel}>Password Changes</Text>
+                    </View>
+                    <View style={styles.checkboxRow}>
+                        <CheckBox
+                            value={specialOffers}
+                            onValueChange={toggleSpecialOffers}
+                            style={styles.checkbox}
+                        />
+                        <Text style={styles.inputLabel}>Special Offers</Text>
+                    </View>
+                    <View style={styles.checkboxRow}>
+                        <CheckBox
+                            value={newsletter}
+                            onValueChange={toggleNewsletter}
+                            style={styles.checkbox}
+                        />
+                        <Text style={styles.inputLabel}>Newsletter</Text>
+                    </View>
+                    <View style={styles.buttonRow}>
+                        <Pressable onPress={ () => {
+                                clearFormChanges()
+                                }
                             }
-                        }
-                        style={[styles.button, !isFormValid && styles.buttonDisabled]}
-                        >
-                        <Text style={styles.mainButtonText}>Save Changes</Text>
-                    </Pressable>
+                            style={[styles.cancelButton]}//, !isFormValid && styles.buttonDisabled]}
+                            >
+                            <Text style={styles.cancelButtonText}>Discard Changes</Text>
+                        </Pressable>
+                        <Pressable onPress={ () => {
+                                storeAllUserProfileData()
+                                }
+                            }
+                            style={[styles.updateButton, !isFormValid && styles.buttonDisabled]}
+                            >
+                            <Text style={styles.updateButtonText}>Save Changes</Text>
+                        </Pressable>
+                    </View>
                 </View>
-                <View>
+                <View style={styles.buttonRow}>
                     <Pressable onPress={ () => {
                             //clearLocalData(),
                             //clearData()
@@ -232,9 +314,23 @@ const styles = StyleSheet.create({
         backgroundColor: 'green',
     },
     main: {
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
         marginBottom: 50,
+        flexDirection: 'column',
+    },
+    buttonRow: {
+        marginVertical: 10,
+        flexDirection: 'row',
+        //alignContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        //justifyContent: 'center',
+        maxHeight: 100,
+    },
+    checkboxRow: {
+        marginVertical: 10,
+        flexDirection: 'row',
     },
     h1: {
         //fontFamily: 'karla',
@@ -246,9 +342,26 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
     },
+    avatarSection: {
+        /*justifyContent: 'space-evenly',
+        alignItems: 'flex-start',
+        //alignContent: 'flex-start',
+        flexDirection: 'row',
+        padding: 10,*/
+    },
+    avatarIcon: {
+        margin: 5,
+        width: 80,
+        height: 80,
+        borderRadius: 50,
+        alignSelf: 'flex-start',
+        //alignItems: 'center',
+        //justifyContent: 'center',
+        backgroundColor: 'green',
+    },
     form: {
-        paddingTop: 50,
-        paddingBottom: 50,
+        paddingTop: 25,
+        paddingBottom: 25,
     },
     inputLabel: {
         //fontFamily: 'karla',
@@ -256,7 +369,7 @@ const styles = StyleSheet.create({
     },
     inputBox: {
         height: 40,
-        width: 250,
+        width: 350,
         marginVertical: 24,
         borderRadius: 8,
         borderWidth: 1,
@@ -264,6 +377,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         borderColor: '#EDEFEE',
     },
+    checkbox: {
+        alignSelf: 'flex-start',
+        marginRight: 10,
+        borderRadius: 3,
+    },    
     button: {
         width: 80,
         borderRadius: 8,
@@ -285,13 +403,51 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         padding: 10,
-        width: 250,
+        width: 350,
         borderRadius: 8,
     },
     mainButtonText: {
         fontSize: 16,
         fontWeight: 'bold',
         color: 'black',
+    },
+    cancelButton: {
+        backgroundColor: 'white',//'#F4CE14',//yellow
+        borderColor: '#495E57',
+        borderWidth: 2,
+        //flexDirection: 'row',
+        //alignSelf: 'flex-start',
+        alignContent: 'center',
+        justifyContent: 'center',
+        padding: 10,
+        margin: 10,
+        maxWidth: 150,
+        maxHeight: 45,
+        borderRadius: 8,
+    },
+    cancelButtonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'black',
+    },
+    updateButton: {
+        backgroundColor: '#495E57',
+        borderColor: '#495E57',
+        borderWidth: 2,
+        //flexDirection: 'row',
+        //alignSelf: 'flex-end',
+        alignContent: 'center',
+        justifyContent: 'center',
+        padding: 10,
+        margin: 10,
+        maxWidth: 150,
+        maxHeight: 45,
+        borderRadius: 8,
+    },
+    updateButtonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'white',
     },
 
 });
