@@ -121,9 +121,9 @@ export default function App() {
           ) : (
             isLoggedIn ? ( 
               <>
-                <Stack.Screen name="Home" component={HomeScreen} />
+                <Stack.Screen name="Home" component={HomeScreen} initialParams={{ updateIsLoggedIn }}/>
                 <Stack.Screen name="Profile" component={ProfileScreen} initialParams={{ updateIsLoggedIn }}/>
-                <Stack.Screen name="ItemDetails" component={ItemScreen} />
+                <Stack.Screen name="ItemDetails" component={ItemScreen} initialParams={{ updateIsLoggedIn }}/>
 
               </>
             ) : (

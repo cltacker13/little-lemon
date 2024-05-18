@@ -3,7 +3,7 @@ import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-nativ
 import { validatePassword, confirmPassword } from '../utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { localData } from '../utils/localData';
-
+import { BackHeader } from './components/Header';
 
 export default function SignUpScreen({navigation, route}){
     console.log('SignUp Screen');
@@ -40,12 +40,7 @@ export default function SignUpScreen({navigation, route}){
     
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <View style={styles.imageContainer}>
-                    <Image source={require('./assets/Logo.png')} 
-                    style={styles.logo}/>
-                </View>
-            </View>
+            <BackHeader navigation={navigation}/>
             <View style={styles.main}>
                 <Text style={styles.h1}>Welcome!</Text>
                 <Text style={styles.h2}>Create a Password</Text>

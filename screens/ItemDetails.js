@@ -1,4 +1,5 @@
 import { View, Pressable, Image, Text, StyleSheet } from "react-native"
+import { BackHeader } from "./components/Header";
 
 export default function ItemScreen({navigation, route}){
     console.log('Item Details Screen');
@@ -7,26 +8,7 @@ export default function ItemScreen({navigation, route}){
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Pressable onPress={ () => {
-                        navigation.navigate('Home')}
-                    }
-                    style={styles.profileIcon}
-                >
-                    <Text style={styles.buttonText}>Nav</Text>
-                </Pressable>
-                <View style={styles.imageContainer}>
-                    <Image source={require('./assets/Logo.png')} 
-                    style={styles.logo}/>
-                </View>
-                <Pressable onPress={ () => {
-                        navigation.navigate('Profile')}
-                    }
-                    style={styles.profileIcon}
-                >
-                    <Text style={styles.buttonText}>You</Text>
-                </Pressable>
-            </View>
+            <BackHeader navigation={navigation}/>
             <View style={styles.main}>
                 <Text>Item Screen</Text>
                 <Text style={styles.h1}>{item.title}</Text>

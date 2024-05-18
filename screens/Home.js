@@ -41,6 +41,7 @@ const Item = ({ id, title, price }) => (
 
 export default function HomeScreen({navigation}){
     console.log('Home Screen');
+    //const { updateIsLoggedIn } = route.params;
 
     //pulled from menu page of previous project  
     const [data, setData] = useState([]);
@@ -135,26 +136,7 @@ export default function HomeScreen({navigation}){
 
     return (
         <View style={styles.container}>
-          <View style={styles.header}>
-            <Pressable onPress={ () => {
-                    navigation.navigate('Home')}
-                }
-                style={styles.profileIcon}
-            >
-                <Text style={styles.buttonText}>Nav</Text>
-            </Pressable>
-            <View style={styles.imageContainer}>
-                <Image source={require('./assets/Logo.png')} 
-                style={styles.logo}/>
-            </View>
-            <Pressable onPress={ () => {
-                    navigation.navigate('Profile')}
-                }
-                style={styles.profileIcon}
-            >
-                <Text style={styles.buttonText}>You</Text>
-            </Pressable>
-          </View>
+          <MainHeader navigation={navigation} />
           <View style={styles.main}>
                 <View style={styles.hero}>
                     <Text style={styles.h1}>Welcome Back!</Text>

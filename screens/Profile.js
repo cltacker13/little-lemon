@@ -1,37 +1,34 @@
 import { useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import CheckBox from 'expo-checkbox';
+import * as ImagePicker from 'expo-image-picker';
 import { localData, clearLocalData } from '../utils/localData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { validateName, validateEmail, validateUSPhone } from '../utils';
-import { MainHeader } from './components/Header';
+import { MainHeader, BackHeader } from './components/Header';
 
 export default function ProfileScreen({navigation, route}){
     console.log('Profile Screen');
 
     const { updateIsLoggedIn } = route.params;
+
     //retrieved values
+    const [image, updateImage] = useState('');
     const [fname, updateFname] = useState('');
     const [lname, updateLname] = useState('');
     const [mail, updateMail] = useState('');
     const [num, updateNum] = useState('');
-    console.log('at load retrieved:',fname,lname,mail,num);
+    //console.log('at load retrieved:',fname,lname,mail,num,image);
     //form edits
     const [firstName, onChangeFirstName] = useState(fname);
     const [lastName, onChangeLastName] = useState(lname);
     const [email, onChangeEmail] = useState(mail);
     const [phone, onChangePhone] = useState(num);
-    console.log('at load form:',firstName,lastName,email,phone);
+    //console.log('at load form:',firstName,lastName,email,phone);
     const [orderStatus, toggleOrderStatus] = useState(true);
     const [passwordChanges, togglePasswordChanges] = useState(true);
     const [specialOffers, toggleSpecialOffers] = useState(true);
     const [newsletter, toggleNewsletter] = useState(true);
-    /*const [notifications, updateNotifications] = useState({
-        orderStatus: true,
-        passwordChanges: true,
-        specialOffers: true,
-        newsletter: true,
-    });*/
 
     const isFirstNameValid = (firstName != '' && validateName(firstName));
     const isLastNameValid = (lastName != '' && validateName(lastName));
@@ -39,24 +36,39 @@ export default function ProfileScreen({navigation, route}){
     const isPhoneValid = (phone != '' && validateUSPhone(phone));
     const isFormValid = (isFirstNameValid && isLastNameValid && isEmailValid && isPhoneValid);
     //validation for phone number format is an issue.
-    console.log(phone,num,validateUSPhone(phone));
-    console.log(isFirstNameValid, isLastNameValid, isEmailValid, isPhoneValid);
-    console.log('Form Valid:',isFormValid);
-    /*if(firstName != '' || lastName != '' || email != '' || phone != ''){
-        (isFirstNameValid && isLastNameValid && isEmailValid && isPhoneValid);    
-    };*/
+    //console.log(phone,num,validateUSPhone(phone));
+    //console.log(isFirstNameValid, isLastNameValid, isEmailValid, isPhoneValid);
+    //console.log('Form Valid:',isFormValid);
 
-    /*const clearData = async () => {
-        console.log('clearing data...');
-        try {
-            await AsyncStorage.multiRemove(['firstOpenComplete','userLoggedIn','firstName','userEmail','userPassword']);
-            clearLocalData();
-            updateIsLoggedIn(false);
-        } catch (error) {
-            //clearing error
-            console.log('clearing data error: ', error);
+    const [avatarImage, setAvatarImage] = useState(null);
+    console.log(image,'  | Vs |  ',avatarImage);
+
+    const pickImage = async () => {
+        let selection = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4,4],
+            quality: 1,
+        });
+        console.log(selection.assets[0].fileName);
+        if(!selection.canceled){
+            setAvatarImage(selection.assets[0].uri);
+            //pending save to Async & set to nav profile icon too
+            storeProfileImage(selection.assets[0].fileName);
         }
-    };*/
+    };
+    //need to store image uri in a retrievable way, does not display on fresh load.
+    const storeProfileImage = async (filename) => {
+        const uri = `.../pathway/${filename}`;
+        console.log('storing Image uri...');
+        console.log(image,'  | Vs |  ',avatarImage);
+        try {
+            await AsyncStorage.setItem('userProfileImage',uri);
+        } catch (error) {
+            //storing Image error
+            console.log('error storing image uri: ', error);
+        }
+    };
     const storeOfflineStatus = async () => {
         console.log('clearing data...');
         try {
@@ -73,16 +85,18 @@ export default function ProfileScreen({navigation, route}){
         try {
             //const firstOpenComplete = await AsyncStorage.getItem('firstOpenComplete');
             //const userLoggedIn = await AsyncStorage.getItem('userLoggedIn');
+            const userProfileImageURI = await AsyncStorage.getItem('userProfileImage');
             const userFirstName = await AsyncStorage.getItem('firstName');
             const userLastName = await AsyncStorage.getItem('lastName');
             const userEmail = await AsyncStorage.getItem('userEmail');
             const userPhone = await AsyncStorage.getItem('phoneNumber');
             //const userPassword = await AsyncStorage.getItem('userPassword');
+            updateImage(userProfileImageURI);
             updateFname(userFirstName); 
             updateLname(userLastName);
             updateMail(userEmail);
             updateNum(userPhone);
-            console.log('user profile:', userFirstName, userLastName, userEmail, userPhone)
+            console.log('user profile:', userFirstName, userLastName, userEmail, userPhone, userProfileImageURI)
         } catch (error) {
             console.log('retrieving user profile data error:', error)
         }
@@ -119,18 +133,24 @@ export default function ProfileScreen({navigation, route}){
 
 
     retrieveUserProfileData();
+    const initials = (fname.charAt(0)+lname.charAt(0));
 
     return (
         <ScrollView style={styles.container}>
-            <MainHeader navigation={navigation} route={route}/>
+            <BackHeader navigation={navigation} />
             <View style={styles.main}>
                 <Text style={styles.h1}>Personal Information</Text>
                 <View style={styles.avatarSection}>
                     <Text style={styles.inputLabel}>Avatar</Text>
                     <View style={styles.buttonRow}>
-                        <View style={styles.avatarIcon}></View>
+                        { 
+                         ((!image || !avatarImage) && <View style={styles.avatarIcon}><Text style={styles.profileInitials}>{initials}</Text></View>) ||
+                         ((image && !avatarImage) && <Image source={{uri: image}} style={styles.avatarIcon} />) || 
+                         (avatarImage && <Image source={{uri: avatarImage}} style={styles.avatarIcon} />)
+                        }
                         <Pressable onPress={ () => {
-                                console.log('update Avatar icon');
+                                pickImage(),
+                                console.log('update Avatar icon:',image);
                                 }
                             }
                             style={styles.updateButton}
@@ -344,8 +364,14 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         alignSelf: 'flex-start',
         //alignItems: 'center',
-        //justifyContent: 'center',
+        justifyContent: 'center',
         backgroundColor: 'green',
+    },
+    profileInitials: {
+        fontSize: 45,
+        fontWeight: 'bold',
+        color: 'white',
+        textAlign: 'center',
     },
     form: {
         paddingTop: 25,
