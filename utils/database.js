@@ -3,12 +3,30 @@ import * as SQLite from 'expo-sqlite/legacy';
 
 const db = SQLite.openDatabase('little_lemon');
 
+export async function dropTable(tableName) {
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      (tx) => {
+        tx.executeSql(  
+          `DROP TABLE IF EXISTS ${tableName}`
+        );
+        },
+        reject,
+        resolve
+      );
+    });
+  }
+  
+
 export async function createTable() {
   return new Promise((resolve, reject) => {
     db.transaction(
       (tx) => {
         tx.executeSql(
-          'create table if not exists menuitems (id integer primary key not null, uuid text, title text, price text, category text);'
+        //  'create table if not exists menuitems (id integer primary key not null, uuid text, title text, price text, category text);'
+         //for capstone
+          'create table if not exists menuitems (id integer primary key not null, name text, price text, category text, description text, image text);'
+        
         );
       },
       reject,
@@ -28,10 +46,17 @@ export async function getMenuItems() {
 }
 
 export function saveMenuItems(menuItems) {
-  
+ /* 
   let query = 'INSERT INTO menuitems (category, price, title, uuid) VALUES ';
   let values = menuItems.map((item) => 
   `('${item.category}', '${item.price}', '${item.title}', '${item.uuid}')`).join(', ');
+*/
+   //for capstone
+  let query = 'INSERT INTO menuitems (category, description, image, price, name) VALUES ';
+  let values = menuItems.map((item) => 
+  `('${item.category}', '${item.description}', '${item.image}', '${item.price}', '${item.name}')`).join(', ');
+
+
 
   db.transaction((tx) => {
     // 2. Implement a single SQL statement to save all menu data in a table called menuitems.

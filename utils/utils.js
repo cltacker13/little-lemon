@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react';
 
-export const SECTION_LIST_MOCK_DATA = [
+/*export const SECTION_LIST_MOCK_DATA = [
+
     {
       title: 'Appetizers',
       data: [
@@ -32,6 +33,7 @@ export const SECTION_LIST_MOCK_DATA = [
       ],
     },
   ];
+*/
 
 /**
  * 3. Implement this function to transform the raw data
@@ -46,24 +48,39 @@ export function getSectionListData(data) {
   // Each item has the following properties: "id", "title" and "price"
   
   //simplified 
-  const dataByCategory = data.reduce((acc, curr) => {
+  const dataByCategory = data.reduce((acc, curr, index) => {
     const menuItem = {
-      id: curr.id,
+      /*id: curr.id,
       title: curr.title,
       price: curr.price,
+      */
+       //for capstone
+      id: index,
+      name: curr.name,
+      price: curr.price,
+      description: curr.description,
+      image: curr.image,
+      //category: curr.category,
     };
     if(!Array.isArray(acc[curr.category])){
       acc[curr.category] = [menuItem];
     }else{
       acc[curr.category].push(menuItem);
-    }
+    };
     return acc;
   }, {});
-  const sectionListData = Object.entries(dataByCategory).map(([key,item]) => {
+  /*const sectionListData = Object.entries(dataByCategory).map(([key,item]) => {
     return {
       title: key,
       data: item,
+    };*/
+  const sectionListData = Object.entries(dataByCategory).map(([item]) => {
+    console.log(item);
+    return {
+      key: item.category,
+      data: item,
     };
+  
   });
   return sectionListData;
 };

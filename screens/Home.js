@@ -7,6 +7,7 @@ import {
   Text,
   View,
   StyleSheet,
+  FlatList,
   SectionList,
   SafeAreaView,
   StatusBar,
@@ -22,20 +23,36 @@ import {
   getMenuItems,
   saveMenuItems,
   filterByQueryAndCategories,
+  dropTable,
 } from '../utils/database';
 import Filters from '../utils/filters';
 import { getSectionListData, useUpdateEffect } from '../utils/utils';
 import { MainHeader } from './components/Header';
 
 //pulled from menu page of previous project
-const API_URL =
+/*const API_URL =
 'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu-items-by-category.json';
 const sections = ['Appetizers', 'Salads', 'Beverages'];
+*/
+ //capstone api data 
+const API_URL = 
+'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json';
+const sections = ['Starters', 'Mains', 'Desserts'];
 
-const Item = ({ id, title, price }) => (
+
+/*const Item = ({ id, title, price }) => (
     <View key={id} style={styles.item} >
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.title}>${price}</Text>
+    </View>
+);*/
+//for capstone
+const Item = ({ name, price, description, image }) => (
+    <View style={styles.item} >
+      <Text style={styles.title}>{name}</Text>
+      <Text style={styles.title}>${price}</Text>
+      <Text style={styles.title}>{description}</Text>
+      <Text style={styles.title}>{image}</Text>
     </View>
 );
 
@@ -62,11 +79,22 @@ export default function HomeScreen({navigation}){
         const json = await response.json();
         return menuData = json.menu.map( (obj)=> {
           return { 
+            /*
             uuid: obj.id,
             title: obj.title,
             price: obj.price,
             category: obj.category.title,
-          } 
+            */
+            //capstone data
+            //id: obj,
+            name: obj.name,
+            price: obj.price,
+            description: obj.description,
+            image: obj.image,
+            category: obj.category,
+            
+         } 
+          
         });
       } catch (err) {
         Alert.alert("Fetch Error:",err.message);
@@ -76,6 +104,9 @@ export default function HomeScreen({navigation}){
     useEffect(() => {
       (async () => {
         try {
+          //drop table to clear data
+          await dropTable('menuItems');
+
           await createTable(); 
           let menuItems = await getMenuItems(); 
           // The application only fetches the menu data once from a remote URL
@@ -84,6 +115,7 @@ export default function HomeScreen({navigation}){
           if (!menuItems.length) {
             const menuItems = await fetchData(); 
             saveMenuItems(menuItems); 
+            console.log(menuItems);
           } 
   
           const sectionListData = getSectionListData(menuItems);
@@ -134,6 +166,7 @@ export default function HomeScreen({navigation}){
       setFilterSelections(arrayCopy);
     };
 
+
     return (
         <View style={styles.container}>
           <MainHeader navigation={navigation} />
@@ -158,15 +191,18 @@ export default function HomeScreen({navigation}){
                     />
                 </View>
                 <View style={styles.menuList}>
-                    <SectionList
+                    <SectionList //FlatList
                         style={styles.sectionList}
+                        //data={data}
                         sections={data}
-                        keyExtractor={(item) => item.id}
+                        keyExtractor={(item,index) => item+index} //{(item) => item.id}
                         renderItem={({ item }) => (
                           <Pressable onPress={ () => {
                             navigation.navigate('ItemDetails',{item})}
                           }>
-                            <Item id={item.id} title={item.title} price={item.price} />
+                            <Item //id={item.id} title={item.title} price={item.price} 
+                              name={item.name} price={item.price} description={item.description} image={item.image}
+                            />
                           </Pressable>
                         )}
                         renderSectionHeader={({ section: { title } }) => (

@@ -1,7 +1,7 @@
 import { View, Text, Pressable, Image, StyleSheet } from "react-native";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import logo from '../../assets/llimages/Logo.png';
+import logo from '../../assets/ll-images/Logo.png';
 //need to update profile icon to conditionally render image when exists.
 
 export function MainHeader({navigation}){
@@ -33,7 +33,7 @@ export function MainHeader({navigation}){
                 <View style={styles.menuInnerSymbol}></View>
             </Pressable>
             <View style={styles.imageContainer}>
-                <Image source={require('../../assets/llimages/Logo.png')} 
+                <Image source={require('../../assets/ll-images/Logo.png')} 
                 style={styles.logo}/>
             </View>
             <Pressable onPress={ () => {
