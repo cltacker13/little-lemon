@@ -41,7 +41,7 @@ export default function ProfileScreen({navigation, route}){
     //console.log('Form Valid:',isFormValid);
 
     const [avatarImage, setAvatarImage] = useState(null);
-    console.log(image,'  | Vs |  ',avatarImage);
+    //console.log(image,'  | Vs |  ',avatarImage);
 
     const pickImage = async () => {
         let selection = await ImagePicker.launchImageLibraryAsync({
@@ -81,7 +81,7 @@ export default function ProfileScreen({navigation, route}){
         }
     };
     const retrieveUserProfileData = async () => {
-        console.log('retrieving User Profile Data');
+        //console.log('retrieving User Profile Data');
         try {
             //const firstOpenComplete = await AsyncStorage.getItem('firstOpenComplete');
             //const userLoggedIn = await AsyncStorage.getItem('userLoggedIn');
@@ -96,7 +96,7 @@ export default function ProfileScreen({navigation, route}){
             updateLname(userLastName);
             updateMail(userEmail);
             updateNum(userPhone);
-            console.log('user profile:', userFirstName, userLastName, userEmail, userPhone, userProfileImageURI)
+            //console.log('user profile:', userFirstName, userLastName, userEmail, userPhone, userProfileImageURI)
         } catch (error) {
             console.log('retrieving user profile data error:', error)
         }

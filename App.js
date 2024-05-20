@@ -38,7 +38,7 @@ export default function App() {
       await AsyncStorage.setItem(
         'firstOpenComplete', 'true'
       )
-      console.log('saved firstopen data');
+      //console.log('saved firstopen data');
       retrieveData();
     } catch (error) {
       //saving error
@@ -46,7 +46,7 @@ export default function App() {
     }
   };
   const retrieveData = async () => {
-    console.log('retrieving data...');
+    //console.log('retrieving data...');
     try {
       const firstOpenComplete = await AsyncStorage.getItem('firstOpenComplete');
       const userLoggedIn = await AsyncStorage.getItem('userLoggedIn');
@@ -55,7 +55,7 @@ export default function App() {
       const userPassword = await AsyncStorage.getItem('userPassword');
       console.log('App retrieved:',firstOpenComplete,userLoggedIn)
       if (firstOpenComplete !== null) {
-        console.log('firstOpenedComplete:',firstOpenComplete);
+        //console.log('firstOpenedComplete:',firstOpenComplete);
         updateIsLoading(false);
         //console.log('data exists');
         if(userLoggedIn !== null){
@@ -63,8 +63,8 @@ export default function App() {
           if(userLoggedIn === 'true'){
             updateIsLoggedIn(true);
             updateLocalData(userFirstName, userEmail, userPassword, userLoggedIn);
-            console.log('retrieve local data on App:',localData)
-            console.log(`user ${userFirstName} is logged in: ${userLoggedIn}`);
+            //console.log('retrieve local data on App:',localData)
+            //console.log(`user ${userFirstName} is logged in: ${userLoggedIn}`);
           } else {
             console.log('not a user');
           }

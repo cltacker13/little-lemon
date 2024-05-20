@@ -27,7 +27,7 @@ export function clearLocalData() {
 
 //not ready to use.
 export const storeAllLocalData = async (firstOpen, loggedIn, firstName, email, password) => {
-    console.log('saving data...');
+    console.log('saving LocalData...');
     try {
       await AsyncStorage.multiSet([
         ['firstOpenComplete', firstOpen],
@@ -56,7 +56,7 @@ export const retrieveAllLocalData = async () => {
         const userEmail = await AsyncStorage.getItem('userEmail');
         const userPassword = await AsyncStorage.getItem('userPassword');
         if (firstOpenComplete !== null) {
-        console.log('firstOpenedComplete:',firstOpenComplete);
+        //console.log('localData | firstOpenedComplete:',firstOpenComplete);
         //console.log('data exists');
           if(userLoggedIn !== null){
           
@@ -67,7 +67,7 @@ export const retrieveAllLocalData = async () => {
                     password: userPassword,
                     online: true,
                 };
-                console.log(`user ${userFirstName} is logged in: ${userLoggedIn}`);
+                //console.log(`localData | user ${userFirstName} is logged in: ${userLoggedIn}`);
               } else {
             console.log('not a user');
             }

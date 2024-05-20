@@ -10,7 +10,7 @@ export function MainHeader({navigation}){
     const [profileImage, updateImage] = useState('');
 
     const retrieveUserProfileData = async () => {
-        console.log('retrieving header user data');
+        //console.log('retrieving header user data');
         try {
             const userProfileImageURI = await AsyncStorage.getItem('userProfileImage');
             const userFirstName = await AsyncStorage.getItem('firstName');
@@ -22,7 +22,7 @@ export function MainHeader({navigation}){
         }
     }
     retrieveUserProfileData();
-    console.log('logo:',logo);
+    //console.log('logo:',logo);
     return(
         <View style={styles.header}>
             <Pressable onPress={ () => {
@@ -53,7 +53,7 @@ export function BackHeader({navigation}){
     const [profileImage, updateImage] = useState('');
 
     const retrieveUserProfileData = async () => {
-        console.log('retrieving header user data');
+        //console.log('retrieving header user data');
         try {
             const userProfileImageURI = await AsyncStorage.getItem('userProfileImage');
             const userFirstName = await AsyncStorage.getItem('firstName');

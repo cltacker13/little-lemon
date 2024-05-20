@@ -46,27 +46,29 @@ export function getSectionListData(data) {
   // The title of each section should be the category.
   // The data property should contain an array of menu items. 
   // Each item has the following properties: "id", "title" and "price"
-  
+  //console.log('sectionListData:',data);
   //simplified 
-  const dataByCategory = data.reduce((acc, curr, index) => {
+  const dataByCategory = data.reduce((acc, curr) => {
     const menuItem = {
       /*id: curr.id,
       title: curr.title,
       price: curr.price,
       */
        //for capstone
-      id: index,
+      id: curr.id,
       name: curr.name,
       price: curr.price,
       description: curr.description,
       image: curr.image,
       //category: curr.category,
     };
+    //console.log('curr cat:',curr.category);
     if(!Array.isArray(acc[curr.category])){
       acc[curr.category] = [menuItem];
     }else{
       acc[curr.category].push(menuItem);
     };
+    //console.log('acc:',acc);
     return acc;
   }, {});
   /*const sectionListData = Object.entries(dataByCategory).map(([key,item]) => {
@@ -74,14 +76,15 @@ export function getSectionListData(data) {
       title: key,
       data: item,
     };*/
-  const sectionListData = Object.entries(dataByCategory).map(([item]) => {
-    console.log(item);
+  const sectionListData = Object.entries(dataByCategory).map(([key,item]) => {
+    //console.log(`items in ${key}:`,item);
     return {
-      key: item.category,
+      title: key,
       data: item,
     };
   
   });
+  console.log('return as sectionListData:', sectionListData);
   return sectionListData;
 };
 

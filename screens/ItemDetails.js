@@ -11,8 +11,14 @@ export default function ItemScreen({navigation, route}){
             <BackHeader navigation={navigation}/>
             <View style={styles.main}>
                 <Text>Item Screen</Text>
-                <Text style={styles.h1}>{item.title}</Text>
-                <Text style={styles.h2}>${item.price}</Text>
+                <View style={styles.item} >
+                    <Text style={styles.itemImage}>{item.image}</Text>
+                    <View style={styles.itemText}>
+                        <Text style={styles.title}>{item.name}</Text>
+                        <Text style={styles.itemDesc}>{item.description}</Text>
+                        <Text style={styles.itemPrice}>${item.price}</Text>
+                    </View>
+                </View>
             </View>
         </View>
     )
@@ -74,5 +80,42 @@ const styles = StyleSheet.create({
         //fontFamily: 'karla',
         fontSize: 20,
         fontWeight: 'bold',
+    },
+
+    item: {
+        flexDirection: 'column',
+        //justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        padding: 10,
+    },
+    itemText: {
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+    },
+    title: {
+        fontSize: 26,
+        color: 'black',
+        fontWeight: 'bold',
+    },
+    itemDesc: {
+      fontSize: 16,
+      color: 'black',
+      paddingVertical: 10,
+    },
+    itemPrice: {
+      fontSize: 20,
+      color: 'black',
+      fontWeight: 'bold',
+    },
+    itemImage: {
+      fontSize: 16,
+      color: 'black',
+      paddingVertical: 5,
+      borderWidth: 1,
+      borderColor: 'black',
+      height: 350,
+      width: 350,
+      alignSelf: 'center',
     },
 })

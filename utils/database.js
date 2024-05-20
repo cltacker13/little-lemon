@@ -4,6 +4,7 @@ import * as SQLite from 'expo-sqlite/legacy';
 const db = SQLite.openDatabase('little_lemon');
 
 export async function dropTable(tableName) {
+  console.log(tableName,'table dropped');
   return new Promise((resolve, reject) => {
     db.transaction(
       (tx) => {
@@ -19,14 +20,13 @@ export async function dropTable(tableName) {
   
 
 export async function createTable() {
+  console.log('creating table in', db._db._name);
+  //  'create table if not exists menuitems (id integer primary key not null, uuid text, title text, price text, category text);'
   return new Promise((resolve, reject) => {
     db.transaction(
       (tx) => {
         tx.executeSql(
-        //  'create table if not exists menuitems (id integer primary key not null, uuid text, title text, price text, category text);'
-         //for capstone
           'create table if not exists menuitems (id integer primary key not null, name text, price text, category text, description text, image text);'
-        
         );
       },
       reject,
@@ -36,14 +36,17 @@ export async function createTable() {
 }
 
 export async function getMenuItems() {
+  console.log('getting menuitems from:',db._db._name);
   return new Promise((resolve) => {
     db.transaction((tx) => {
       tx.executeSql('SELECT * FROM menuitems', [], (_, { rows }) => {
+        console.log('all from table:',JSON.stringify(rows))
         resolve(rows._array);
       });
     });
   });
 }
+
 
 export function saveMenuItems(menuItems) {
  /* 
@@ -89,6 +92,7 @@ export function saveMenuItems(menuItems) {
  *
  */
 export async function filterByQueryAndCategories(query, activeCategories) {
+  console.log('filter active cats:',activeCategories);
   var filterParams = `WHERE`;
   switch (activeCategories.length) {
     case 2:
@@ -104,6 +108,7 @@ export async function filterByQueryAndCategories(query, activeCategories) {
   if (query !== ''){
     filterParams += ` AND title LIKE '%${query}%'`;
   }
+  //console.log(db);
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(`SELECT * FROM menuitems ${filterParams}`, [], (_, { rows }) => {

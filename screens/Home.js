@@ -37,7 +37,7 @@ const sections = ['Appetizers', 'Salads', 'Beverages'];
  //capstone api data 
 const API_URL = 
 'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json';
-const sections = ['Starters', 'Mains', 'Desserts'];
+const sections = ['starters', 'mains', 'desserts'];
 
 
 /*const Item = ({ id, title, price }) => (
@@ -48,11 +48,13 @@ const sections = ['Starters', 'Mains', 'Desserts'];
 );*/
 //for capstone
 const Item = ({ name, price, description, image }) => (
-    <View style={styles.item} >
-      <Text style={styles.title}>{name}</Text>
-      <Text style={styles.title}>${price}</Text>
-      <Text style={styles.title}>{description}</Text>
-      <Text style={styles.title}>{image}</Text>
+    <View style={styles.itemCard} >
+      <View style={styles.itemText}>
+        <Text style={styles.title}>{name}</Text>
+        <Text style={styles.itemDesc}>{description}</Text>
+        <Text style={styles.itemPrice}>${price}</Text>
+      </View>
+      <Text style={styles.itemImage}>{image}</Text>
     </View>
 );
 
@@ -77,7 +79,7 @@ export default function HomeScreen({navigation}){
       try {
         const response = await fetch(API_URL);
         const json = await response.json();
-        return menuData = json.menu.map( (obj)=> {
+        return menuData = json.menu.map( (obj, index)=> {
           return { 
             /*
             uuid: obj.id,
@@ -86,7 +88,7 @@ export default function HomeScreen({navigation}){
             category: obj.category.title,
             */
             //capstone data
-            //id: obj,
+            id: index + 1,
             name: obj.name,
             price: obj.price,
             description: obj.description,
@@ -94,7 +96,7 @@ export default function HomeScreen({navigation}){
             category: obj.category,
             
          } 
-          
+        
         });
       } catch (err) {
         Alert.alert("Fetch Error:",err.message);
@@ -104,18 +106,19 @@ export default function HomeScreen({navigation}){
     useEffect(() => {
       (async () => {
         try {
-          //drop table to clear data
-          await dropTable('menuItems');
+          //drop table to clear data during dev testing
+          //await dropTable('menuItems');
 
           await createTable(); 
           let menuItems = await getMenuItems(); 
+          console.log('getmenuitems:',menuItems)
           // The application only fetches the menu data once from a remote URL
           // and then stores it into a SQLite database.
           // After that, every application restart loads the menu from the database
           if (!menuItems.length) {
-            const menuItems = await fetchData(); 
+            menuItems = await fetchData(); 
             saveMenuItems(menuItems); 
-            console.log(menuItems);
+            //console.log('fetched to createTable:',menuItems);
           } 
   
           const sectionListData = getSectionListData(menuItems);
@@ -130,17 +133,23 @@ export default function HomeScreen({navigation}){
     useUpdateEffect(() => {
       (async () => {
         const activeCategories = sections.filter((s, i) => {
+          //const sect = s.toLowerCase();
+          //console.log('s:',s,'& i:',i);
           // If all filters are deselected, all categories are active
           if (filterSelections.every((item) => item === false)) {
+            //console.log('sect item:',item)
             return true;
           }
+          //console.log(s,':',filterSelections[i])
           return filterSelections[i];
         }); 
+        console.log('active Cats:',activeCategories)
         try {
           const menuItems = await filterByQueryAndCategories(
             query,
             activeCategories
           );
+          //console.log('menuitems after filter:',menuItems)
           const sectionListData = getSectionListData(menuItems);
           setData(sectionListData);
         } catch (err) {
@@ -296,21 +305,50 @@ const styles = StyleSheet.create({
         shadowOpacity: 0,
         width: 250,
     },
-    item: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 16,
+    itemCard: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      padding: 10,
+    },
+    itemText: {
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      maxWidth: 225, //may not be right place/way to set this
+    },
+    title: {
+        fontSize: 18,
+        color: 'black',
+        fontWeight: 'bold',
+    },
+    itemDesc: {
+      fontSize: 16,
+      color: 'black',
+      paddingVertical: 5,
+      overflow: 'hidden',
+      height: 50,
+    },
+    itemPrice: {
+      fontSize: 16,
+      color: 'black',
+      fontWeight: 'bold',
     },
     sectionHeader: {
-        fontSize: 24,
-        paddingVertical: 8,
+        fontSize: 16,
+        paddingVertical: 5,
         color: '#495E57',//'#FBDABB',
         backgroundColor: 'white',//'#495E57',
     },
-    title: {
-        fontSize: 20,
-        color: 'black',
+    itemImage: {
+      fontSize: 16,
+      color: 'black',
+      paddingVertical: 5,
+      borderWidth: 1,
+      borderColor: 'black',
+      height: 75,
+      width: 75,
     },
+    
 
 });
