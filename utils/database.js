@@ -20,20 +20,38 @@ export async function dropTable(tableName) {
   
 
 export async function createTable() {
-  console.log('creating table in', db._db._name);
+  console.log('db exists:', db)
+  console.log('creating table: in', db._db._name);
   //  'create table if not exists menuitems (id integer primary key not null, uuid text, title text, price text, category text);'
   return new Promise((resolve, reject) => {
     db.transaction(
       (tx) => {
         tx.executeSql(
-          'create table if not exists menuitems (id integer primary key not null, name text, price text, category text, description text, image text);'
+          'CREATE TABLE IF NOT EXISTS menuitems (id integer primary key not null, name text, price text, category text, description text, image text)',
+          [], 
+          (_tx, rs) => {
+            console.log("create=" + JSON.stringify(rs));
+          },
+          (_tx, err) => {
+            console.log("create error=" + JSON.stringify(err));
+          }
         );
       },
       reject,
       resolve
+      /*reject => {
+        console.log("1error=" + JSON.stringify(reject));
+      },
+      resolve => {
+        console.log("2success=" + JSON.stringify(resolve));
+      }*/
     );
+
   });
+
 }
+
+
 
 export async function getMenuItems() {
   console.log('getting menuitems from:',db._db._name);
@@ -45,10 +63,11 @@ export async function getMenuItems() {
       });
     });
   });
+
 }
 
 
-export function saveMenuItems(menuItems) {
+export async function saveMenuItems(menuItems) {
  /* 
   let query = 'INSERT INTO menuitems (category, price, title, uuid) VALUES ';
   let values = menuItems.map((item) => 
@@ -57,18 +76,25 @@ export function saveMenuItems(menuItems) {
    //for capstone
   let query = 'INSERT INTO menuitems (category, description, image, price, name) VALUES ';
   let values = menuItems.map((item) => 
-  `('${item.category}', '${item.description}', '${item.image}', '${item.price}', '${item.name}')`).join(', ');
-
-
+  `("${item.category}", "${item.description}", "${item.image}", "${item.price}", "${item.name}")`).join(', ');
 
   db.transaction((tx) => {
     // 2. Implement a single SQL statement to save all menu data in a table called menuitems.
     // Check the createTable() function above to see all the different columns the table has
     // Hint: You need a SQL statement to insert multiple rows at once.
     tx.executeSql(      
-      query + values
-   );
+      query + values,
+      //'INSERT INTO menuitems (category, description, image, price, name) VALUES ("desserts", "Freshmade vanilla ice cream", "icecream.jpg", "5.00", "Ice Cream")',
+      //query + values,[], 
+      [],(_tx, rs) => {
+        console.log("insert=" + JSON.stringify(rs));
+      },
+      (_tx, err) => {
+        console.log("insert error=" + err/*JSON.stringify(err)*/);
+      }
+    );
   });
+
 }
 
 /**
@@ -92,7 +118,7 @@ export function saveMenuItems(menuItems) {
  *
  */
 export async function filterByQueryAndCategories(query, activeCategories) {
-  console.log('filter active cats:',activeCategories);
+  //console.log('filter active cats:',activeCategories);
   var filterParams = `WHERE`;
   switch (activeCategories.length) {
     case 2:

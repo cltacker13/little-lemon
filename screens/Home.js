@@ -107,7 +107,7 @@ export default function HomeScreen({navigation}){
       (async () => {
         try {
           //drop table to clear data during dev testing
-          //await dropTable('menuItems');
+          await dropTable('menuItems');
 
           await createTable(); 
           let menuItems = await getMenuItems(); 
@@ -143,7 +143,7 @@ export default function HomeScreen({navigation}){
           //console.log(s,':',filterSelections[i])
           return filterSelections[i];
         }); 
-        console.log('active Cats:',activeCategories)
+        //console.log('active Cats:',activeCategories)
         try {
           const menuItems = await filterByQueryAndCategories(
             query,
