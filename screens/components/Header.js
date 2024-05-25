@@ -4,8 +4,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import logo from '../../assets/ll-images/Logo.png';
 //need to update profile icon to conditionally render image when exists.
 
+const logoImage = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-images/Logo.png?raw=true';
+
+
 export function MainHeader({navigation}){
     //const { updateIsLoggedIn } = route.params;
+    const [uriExists, updateUriExists] = useState(false);
     const [profileInitials, updateInitials] = useState(':D');
     const [profileImage, updateImage] = useState('');
 
@@ -15,7 +19,11 @@ export function MainHeader({navigation}){
             const userProfileImageURI = await AsyncStorage.getItem('userProfileImage');
             const userFirstName = await AsyncStorage.getItem('firstName');
             const userLastName = await AsyncStorage.getItem('lastName');
-            updateImage(userProfileImageURI);
+            console.log(userProfileImageURI);
+            if(userProfileImageURI !== ''){
+                updateUriExists(true);
+                updateImage(userProfileImageURI);
+            }
             updateInitials(userFirstName.charAt(0)+userLastName.charAt(0));
         } catch (error) {
             console.log('retrieving header user data:', error)
@@ -33,15 +41,22 @@ export function MainHeader({navigation}){
                 <View style={styles.menuInnerSymbol}></View>
             </Pressable>
             <View style={styles.imageContainer}>
-                <Image source={require('../../assets/ll-images/Logo.png')} 
-                style={styles.logo}/>
+                <Image source={{uri: logoImage}}//require('../../assets/ll-images/Logo.png')} 
+                    style={styles.logo}/>
             </View>
             <Pressable onPress={ () => {
                     navigation.navigate('Profile')}
                 }
                 style={styles.profileIcon}
             >
-                <Text style={styles.profileIconText}>{profileInitials}</Text>
+                {uriExists ?
+                    ( <Image style={styles.profileIcon} 
+                        source={{uri: profileImage}}
+                      />
+                    ) :
+                    ( <Text style={styles.profileIconText}>{profileInitials}</Text>
+                    )}
+                
             </Pressable>
         </View>
     )
@@ -49,6 +64,7 @@ export function MainHeader({navigation}){
 
 export function BackHeader({navigation}){
     const back = `<-`;
+    const [uriExists, updateUriExists] = useState(false);
     const [profileInitials, updateInitials] = useState(':D');
     const [profileImage, updateImage] = useState('');
 
@@ -58,7 +74,11 @@ export function BackHeader({navigation}){
             const userProfileImageURI = await AsyncStorage.getItem('userProfileImage');
             const userFirstName = await AsyncStorage.getItem('firstName');
             const userLastName = await AsyncStorage.getItem('lastName');
-            updateImage(userProfileImageURI);
+            console.log(userProfileImageURI);
+            if(userProfileImageURI !== ''){
+                updateUriExists(true);
+                updateImage(userProfileImageURI);
+            }
             updateInitials(userFirstName.charAt(0)+userLastName.charAt(0));
         } catch (error) {
             console.log('retrieving header user data error:', error)
@@ -75,15 +95,21 @@ export function BackHeader({navigation}){
                 <Text style={styles.backArrow}>{back}</Text>
             </Pressable>
             <View style={styles.imageContainer}>
-                <Image source={require('../../assets/ll-images/Logo.png')} 
-                style={styles.logo}/>
+                <Image source={{uri: logoImage}}//require('../../assets/ll-images/Logo.png')} 
+                    style={styles.logo}/>
             </View>
             <Pressable onPress={ () => {
                     navigation.navigate('Profile')}
                 }
                 style={styles.profileIcon}
             >
-                <Text style={styles.profileIconText}>{profileInitials}</Text>
+                {uriExists ?
+                    ( <Image style={styles.profileIcon} 
+                        source={{uri: profileImage}}
+                      />
+                    ) :
+                    ( <Text style={styles.profileIconText}>{profileInitials}</Text>
+                    )}
             </Pressable>
         </View>
     )
@@ -159,8 +185,8 @@ const styles = StyleSheet.create({
         //backgroundColor: '#F4CE14',
         height: 50,
         width: 250,
-        borderColor: '#F4CE14',
-        borderWidth: 1,
+        //borderColor: '#F4CE14',
+        //borderWidth: 1,
     },
     logo: {
         height: 50,

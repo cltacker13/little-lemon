@@ -50,18 +50,20 @@ export default function ProfileScreen({navigation, route}){
             aspect: [4,4],
             quality: 1,
         });
-        console.log(selection.assets[0].fileName);
+        console.log(selection.assets[0].uri);
         if(!selection.canceled){
             setAvatarImage(selection.assets[0].uri);
             //pending save to Async & set to nav profile icon too
-            storeProfileImage(selection.assets[0].fileName);
+            storeProfileImage(selection.assets[0].uri);
+        }else if(selection.canceled){
+            console.log('image selection canceled.')
         }
     };
     //need to store image uri in a retrievable way, does not display on fresh load.
-    const storeProfileImage = async (filename) => {
-        const uri = `.../pathway/${filename}`;
+    const storeProfileImage = async (fileURI) => {
+        const uri = `${fileURI}`;
         console.log('storing Image uri...');
-        console.log(image,'  | Vs |  ',avatarImage);
+        //console.log(image,'  | Vs |  ',avatarImage);
         try {
             await AsyncStorage.setItem('userProfileImage',uri);
         } catch (error) {
@@ -143,10 +145,19 @@ export default function ProfileScreen({navigation, route}){
                 <View style={styles.avatarSection}>
                     <Text style={styles.inputLabel}>Avatar</Text>
                     <View style={styles.buttonRow}>
-                        { 
-                         ((!image || !avatarImage) && <View style={styles.avatarIcon}><Text style={styles.profileInitials}>{initials}</Text></View>) ||
-                         ((image && !avatarImage) && <Image source={{uri: image}} style={styles.avatarIcon} />) || 
-                         (avatarImage && <Image source={{uri: avatarImage}} style={styles.avatarIcon} />)
+                        { image !== '' ?
+                            (
+                            <Image source={{uri: image}} 
+                                style={styles.avatarIcon} />
+                            )
+                            :(
+                            <View style={styles.avatarIcon}>
+                                <Text style={styles.profileInitials}>{initials}</Text>
+                            </View> 
+                            )
+                         //((!image || !avatarImage) && <View style={styles.avatarIcon}><Text style={styles.profileInitials}>{initials}</Text></View>) ||
+                         //((image && !avatarImage) && <Image source={{uri: image}} style={styles.avatarIcon} />) || 
+                         //(avatarImage && <Image source={{uri: avatarImage}} style={styles.avatarIcon} />)
                         }
                         <Pressable onPress={ () => {
                                 pickImage(),

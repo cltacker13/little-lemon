@@ -50,11 +50,7 @@ export function getSectionListData(data) {
   //simplified 
   const dataByCategory = data.reduce((acc, curr) => {
     const menuItem = {
-      /*id: curr.id,
-      title: curr.title,
-      price: curr.price,
-      */
-       //for capstone
+      //for capstone
       id: curr.id,
       name: curr.name,
       price: curr.price,
@@ -71,11 +67,7 @@ export function getSectionListData(data) {
     //console.log('acc:',acc);
     return acc;
   }, {});
-  /*const sectionListData = Object.entries(dataByCategory).map(([key,item]) => {
-    return {
-      title: key,
-      data: item,
-    };*/
+
   const sectionListData = Object.entries(dataByCategory).map(([key,item]) => {
     //console.log(`items in ${key}:`,item);
     return {

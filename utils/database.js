@@ -1,5 +1,4 @@
 import * as SQLite from 'expo-sqlite/legacy';
-//import { SECTION_LIST_MOCK_DATA } from './utils';
 
 const db = SQLite.openDatabase('little_lemon');
 
@@ -68,12 +67,6 @@ export async function getMenuItems() {
 
 
 export async function saveMenuItems(menuItems) {
- /* 
-  let query = 'INSERT INTO menuitems (category, price, title, uuid) VALUES ';
-  let values = menuItems.map((item) => 
-  `('${item.category}', '${item.price}', '${item.title}', '${item.uuid}')`).join(', ');
-*/
-   //for capstone
   let query = 'INSERT INTO menuitems (category, description, image, price, name) VALUES ';
   let values = menuItems.map((item) => 
   `("${item.category}", "${item.description}", "${item.image}", "${item.price}", "${item.name}")`).join(', ');
@@ -132,7 +125,7 @@ export async function filterByQueryAndCategories(query, activeCategories) {
     break;
   }
   if (query !== ''){
-    filterParams += ` AND title LIKE '%${query}%'`;
+    filterParams += ` AND (name LIKE '%${query}%' OR description LIKE '%${query}%')`;
   }
   //console.log(db);
   return new Promise((resolve, reject) => {

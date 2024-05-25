@@ -10,14 +10,19 @@ export default function ItemScreen({navigation, route}){
         <View style={styles.container}>
             <BackHeader navigation={navigation}/>
             <View style={styles.main}>
-                <Text>Item Screen</Text>
                 <View style={styles.item} >
-                    <Text style={styles.itemImage}>{item.image}</Text>
+                    <Image style={styles.itemImage} 
+                        source={{uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${item.image}?raw=true`}} />
                     <View style={styles.itemText}>
-                        <Text style={styles.title}>{item.name}</Text>
+                        <View style={styles.itemHead}>
+                            <Text style={styles.title}>{item.name}</Text>
+                            <Text style={styles.itemPrice}>${item.price}</Text>
+                        </View>
                         <Text style={styles.itemDesc}>{item.description}</Text>
-                        <Text style={styles.itemPrice}>${item.price}</Text>
                     </View>
+                </View>
+                <View>
+                    {/*add quantity & add to cart button pending*/}
                 </View>
             </View>
         </View>
@@ -93,10 +98,14 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between',
       alignItems: 'flex-start',
     },
+    itemHead: {
+        flexDirection: 'row',
+    },
     title: {
-        fontSize: 26,
+        fontSize: 20,
         color: 'black',
         fontWeight: 'bold',
+        width: 275,
     },
     itemDesc: {
       fontSize: 16,
@@ -109,13 +118,14 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
     itemImage: {
-      fontSize: 16,
-      color: 'black',
+      //fontSize: 16,
+      //color: 'black',
       paddingVertical: 5,
-      borderWidth: 1,
-      borderColor: 'black',
+      //borderWidth: 1,
+      //borderColor: 'black',
       height: 350,
-      width: 350,
+      width: 400,
       alignSelf: 'center',
+      marginBottom: 25,
     },
 })

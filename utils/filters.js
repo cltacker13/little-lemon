@@ -13,15 +13,16 @@ const Filters = ({ onChange, selections, sections }) => {
             flex: 1 / sections.length,
             justifyContent: 'center',
             alignItems: 'center',
-            padding: 16,
-            backgroundColor: selections[index] ? '#EE9972' : '#495E57', //pink-peachy: #EE9972
+            padding: 12,
+            marginHorizontal: 5,
+            backgroundColor: selections[index] ? '#D9D9D9' : '#EDEFEE', 
             borderWidth: 1,
             borderRadius: 26,
             borderColor: 'white',
           }}>
           <View>
-            <Text style={{ color: selections[index] ? 'black' : 'white' }}>
-              {section}
+            <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 16}}>
+              {section.charAt(0).toUpperCase() + section.slice(1)}
             </Text>
           </View>
         </TouchableOpacity>

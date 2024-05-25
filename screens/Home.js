@@ -15,6 +15,7 @@ import {
   Image,
   Alert,
   TextInput,
+  ScrollView,
 } from 'react-native';
 //import { Searchbar } from 'react-native-paper';
 import debounce from 'lodash.debounce';
@@ -29,40 +30,30 @@ import Filters from '../utils/filters';
 import { getSectionListData, useUpdateEffect } from '../utils/utils';
 import { MainHeader } from './components/Header';
 
-//pulled from menu page of previous project
-/*const API_URL =
-'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu-items-by-category.json';
-const sections = ['Appetizers', 'Salads', 'Beverages'];
-*/
- //capstone api data 
 const API_URL = 
 'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json';
 const sections = ['starters', 'mains', 'desserts'];
 
-
-/*const Item = ({ id, title, price }) => (
-    <View key={id} style={styles.item} >
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.title}>${price}</Text>
-    </View>
-);*/
-//for capstone
-const Item = ({ name, price, description, image }) => (
-    <View style={styles.itemCard} >
+const ItemSepatator = () => (
+  <View style={styles.itemSepatator}></View>
+);
+const Item = ({ /*category, id,*/ name, price, description, image }) => (
+    <View style={styles.itemCard} /*id={category} key={id}*/>
       <View style={styles.itemText}>
         <Text style={styles.title}>{name}</Text>
         <Text style={styles.itemDesc}>{description}</Text>
         <Text style={styles.itemPrice}>${price}</Text>
       </View>
-      <Text style={styles.itemImage}>{image}</Text>
+      <Image style={styles.itemImage} 
+      source={{uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`}} />
     </View>
 );
+const heroImage = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-images/Hero%20image.png?raw=true';
 
 export default function HomeScreen({navigation}){
     console.log('Home Screen');
     //const { updateIsLoggedIn } = route.params;
 
-    //pulled from menu page of previous project  
     const [data, setData] = useState([]);
     const [searchBarText, setSearchBarText] = useState('');
     const [query, setQuery] = useState('');
@@ -81,13 +72,6 @@ export default function HomeScreen({navigation}){
         const json = await response.json();
         return menuData = json.menu.map( (obj, index)=> {
           return { 
-            /*
-            uuid: obj.id,
-            title: obj.title,
-            price: obj.price,
-            category: obj.category.title,
-            */
-            //capstone data
             id: index + 1,
             name: obj.name,
             price: obj.price,
@@ -107,7 +91,7 @@ export default function HomeScreen({navigation}){
       (async () => {
         try {
           //drop table to clear data during dev testing
-          await dropTable('menuItems');
+          //await dropTable('menuItems');
 
           await createTable(); 
           let menuItems = await getMenuItems(); 
@@ -180,48 +164,65 @@ export default function HomeScreen({navigation}){
         <View style={styles.container}>
           <MainHeader navigation={navigation} />
           <View style={styles.main}>
-                <View style={styles.hero}>
-                    <Text style={styles.h1}>Welcome Back!</Text>
-                    <Text style={styles.h2}>Little Lemon Home Page!</Text>
-                    <TextInput
-                        placeholder="Search"
-                        placeholderTextColor="#495E57"
-                        onChangeText={handleSearchChange}
-                        value={searchBarText}
-                        style={styles.searchBar}
-                        iconColor="#495E57"
-                        inputStyle={{ color: "#495E57" }}
-                        elevation={0}
-                    />
-                    <Filters
-                        selections={filterSelections}
-                        onChange={handleFiltersChange}
-                        sections={sections}
-                    />
+                <View style={styles.heroBox}>
+                  <Text style={styles.heroH1}>Little Lemon</Text>
+                  <View style={styles.heroRow}>
+                    <View style={styles.heroTextColumn}>
+                      <Text style={styles.heroH2}>Chicago</Text>
+                      <Text style={styles.heroDesc}>We are a family-owned Mediterranean restaurant, focused on traditional recipes served with a modern twist.</Text>
+                    </View>
+                    <View style={styles.heroImageColumn}>
+                      <Image style={styles.heroImage} 
+                        source={{uri: heroImage}} />
+                    </View>
+                  </View>
+                  <TextInput
+                      placeholder="Search"
+                      placeholderTextColor="#495E57"
+                      onChangeText={handleSearchChange}
+                      value={searchBarText}
+                      style={styles.searchBar}
+                      iconColor="#495E57"
+                      inputStyle={{ color: "#495E57" }}
+                      elevation={0}
+                  />
+                </View>  
+                <View style={{ paddingVertical: 5 }}>  
+                  <Text style={styles.h2}>ORDER FOR DELIVERY!</Text>
+                  <Filters
+                    selections={filterSelections}
+                    onChange={handleFiltersChange}
+                    sections={sections}
+                  />
                 </View>
                 <View style={styles.menuList}>
-                    <SectionList //FlatList
-                        style={styles.sectionList}
-                        //data={data}
-                        sections={data}
-                        keyExtractor={(item,index) => item+index} //{(item) => item.id}
-                        renderItem={({ item }) => (
-                          <Pressable onPress={ () => {
-                            navigation.navigate('ItemDetails',{item})}
-                          }>
-                            <Item //id={item.id} title={item.title} price={item.price} 
-                              name={item.name} price={item.price} description={item.description} image={item.image}
-                            />
-                          </Pressable>
+                  {/*console.log('data for FlatList:',data[0].data[0].name)*/}
+                  <SectionList //FlatList
+                    style={styles.sectionList}
+                    //data={data} 
+                    sections={data}
+                    keyExtractor={(item,index) => item+index} //{(item) => item.id}
+                    renderItem={({ item }) => (
+                      <Pressable onPress={ () => {
+                        //console.log({item})
+                        navigation.navigate('ItemDetails',{item})
+                      }}>
+                        <Item //id={item.id} title={item.title} price={item.price} 
+                          //category={item.title} id={item.id}
+                          name={item.name} price={item.price} 
+                          description={item.description} image={item.image}
+                        />
+                      </Pressable>
                         )}
-                        renderSectionHeader={({ section: { title } }) => (
-                        <Text style={styles.sectionHeader}>{title}</Text>
-                        )}
-                    />
+                    ListHeaderComponent={ItemSepatator}
+                    ItemSeparatorComponent={ItemSepatator}
+                    renderSectionHeader={({ section: { title } }) => (
+                    <ItemSepatator/>//<Text style={styles.sectionHeader}>{title}</Text>
+                    )}
+                  />
                 </View>
 
-
-            </View>
+          </View>
         </View>
 
     );
@@ -269,14 +270,65 @@ const styles = StyleSheet.create({
         backgroundColor: 'green',
     },
     main: {
-        //alignItems: 'center',
-        //justifyContent: 'center',
-        marginBottom: 50,
+      //alignItems: 'center',
+      //justifyContent: 'center',
+      marginBottom: 50,
 
     },
-    hero: {
-        alignItems: 'center',
-        justifyContent: 'center',
+    heroBox: {
+      alignSelf: 'center',
+      //alignItems: 'left',
+      justifyContent: 'flex-start',
+      backgroundColor: '#495E57',
+      marginBottom: 5,
+      width: 450,
+      paddingHorizontal: 20,
+    },
+    heroRow: {
+      flexDirection: 'row',
+    },  
+    heroTextColumn: {
+      width: 225,
+      marginLeft: 20,
+      flexDirection: 'column',
+      alignContent: 'left',
+      //justifyContent: 'flex-start',
+    },
+    heroH1: {
+      fontSize: 56,
+      color: '#F4CE14',
+      marginLeft: 20,
+    },
+    heroH2: {
+      fontSize: 34,
+      color: 'white',
+      //marginLeft: 20,
+      marginBottom: 5,
+      textAlignVertical: 'top',
+    },
+    heroDesc: {
+      //marginLeft: 20,
+      fontSize: 18,
+      color: 'white',
+      //width: 225,
+      marginRight: 5,
+      paddingVertical: 5,
+    },
+    heroImageColumn: {
+      alignContent: 'right',
+      justifyContent: 'center',
+      marginRight: 20,
+      //borderWidth: 1,
+      //borderColor: 'black',
+      borderRadius: 26,
+      marginTop: 15,
+      height: 160,
+    },
+    heroImage: {
+      resizeMode: 'cover',
+      width: 140,
+      height: 160,
+      borderRadius: 26,
     },
     h1: {
         //fontFamily: 'karla',
@@ -287,40 +339,45 @@ const styles = StyleSheet.create({
         //fontFamily: 'karla',
         fontSize: 20,
         fontWeight: 'bold',
+        paddingBottom: 10,
     },
     menuList: {
-        maxHeight: 500,//or something else to define max screen view
+        maxHeight: 275,//or something else to define max screen view
     },
     sectionList: {
-        paddingHorizontal: 16,
+      //paddingHorizontal: 16,
     },
     searchBar: {
-        marginBottom: 24,
-        marginTop: 24,
-        padding: 5,
-        borderColor: '#495E57',
-        borderWidth: 1,
-        borderRadius: 8,
-        shadowRadius: 0,
-        shadowOpacity: 0,
-        width: 250,
+      alignSelf: 'center',
+      marginBottom: 24,
+      marginTop: 24,
+      padding: 5,
+      borderColor: 'black',
+      borderWidth: 1,
+      borderRadius: 8,
+      shadowRadius: 0,
+      shadowOpacity: 0,
+      width: 350,
+      backgroundColor: 'white',
     },
     itemCard: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'flex-start',
-      padding: 10,
+      paddingTop: 10,
+      height: 120,
     },
     itemText: {
       flexDirection: 'column',
       justifyContent: 'space-between',
       alignItems: 'flex-start',
-      maxWidth: 225, //may not be right place/way to set this
+      width: 225, //may not be right place/way to set this
+      paddingRight: 2,
     },
     title: {
-        fontSize: 18,
-        color: 'black',
-        fontWeight: 'bold',
+      fontSize: 18,
+      color: 'black',
+      fontWeight: 'bold',
     },
     itemDesc: {
       fontSize: 16,
@@ -341,13 +398,18 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',//'#495E57',
     },
     itemImage: {
-      fontSize: 16,
-      color: 'black',
+      //fontSize: 16,
+      //color: 'black',
       paddingVertical: 5,
       borderWidth: 1,
-      borderColor: 'black',
-      height: 75,
-      width: 75,
+      borderColor: 'white',
+      height: 100,
+      width: 100,
+    },
+    itemSepatator: {
+      height: 1,
+      width: 'auto',
+      backgroundColor: '#D9D9D9',
     },
     
 
