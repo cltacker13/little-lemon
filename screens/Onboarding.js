@@ -28,6 +28,12 @@ export default function OnboardingScreen({navigation}){
         }
       };
 
+    const inlineEmailValidation = () => {
+        if(!isEmailValid){
+            Alert.alert('Email is Invalid', 'Please enter another email address. Example: user@website.com.');
+        }
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -58,6 +64,7 @@ export default function OnboardingScreen({navigation}){
                         placeholder={'Type your email'}
                         keyboardType="email-address"
                         textContentType="emailAddress"
+                        onEndEditing={inlineEmailValidation}
                     />
                 </View>
 

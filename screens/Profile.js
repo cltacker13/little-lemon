@@ -29,19 +29,40 @@ export default function ProfileScreen({navigation, route}){
     const [passwordChanges, togglePasswordChanges] = useState(true);
     const [specialOffers, toggleSpecialOffers] = useState(true);
     const [newsletter, toggleNewsletter] = useState(true);
-
-    const isFirstNameValid = (firstName != '' && validateName(firstName));
-    const isLastNameValid = (lastName != '' && validateName(lastName));
-    const isEmailValid = (email != '' && validateEmail(email));
-    const isPhoneValid = (phone != '' && validateUSPhone(phone));
+    //form validation toggles save button option
+    const isFirstNameValid = (firstName != '' ? validateName(firstName) : validateName(fname));
+    const isLastNameValid = (lastName != '' ? validateName(lastName) : validateName(lname));
+    const isEmailValid = (email != '' ? validateEmail(email) : validateEmail(mail));
+    const isPhoneValid = (phone != '' ? validateUSPhone(phone) : validateUSPhone(num));
     const isFormValid = (isFirstNameValid && isLastNameValid && isEmailValid && isPhoneValid);
-    //validation for phone number format is an issue.
-    //console.log(phone,num,validateUSPhone(phone));
+    //console.log(phone,num,validateUSPhone(phone),isFormValid);
     //console.log(isFirstNameValid, isLastNameValid, isEmailValid, isPhoneValid);
     //console.log('Form Valid:',isFormValid);
 
+    //newly selected profile image.
     const [avatarImage, setAvatarImage] = useState(null);
     //console.log(image,'  | Vs |  ',avatarImage);
+
+    const inlineEmailValidation = () => {
+        if(!isEmailValid){
+            Alert.alert('Email is Invalid', 'Please enter another email address. Example: user@website.com.');
+        }
+    }
+
+    const updatePhoneFormat = () => {
+        let n = phone;
+        let formated = '';
+        if(n !== '' && n.length == 15){
+            //+1(###)###-### 
+            if(n.charAt(0) !== '+'){
+                formated = `+1(${n.charAt(0)}${n.charAt(1)}${n.charAt(2)})${n.charAt(3)}${n.charAt(4)}${n.charAt(5)}-${n.charAt(6)}${n.charAt(7)}${n.charAt(8)}${n.charAt(9)}`; 
+                console.log('formated number:',formated);
+                onChangePhone(formated);
+            }
+        }else {
+            Alert.alert('Phone Number is Invalid', 'Please enter 10 digit US phone number.')
+        }
+    }
 
     const pickImage = async () => {
         let selection = await ImagePicker.launchImageLibraryAsync({
@@ -50,10 +71,10 @@ export default function ProfileScreen({navigation, route}){
             aspect: [4,4],
             quality: 1,
         });
-        console.log(selection.assets[0].uri);
+        //console.log(selection.assets[0].uri);
         if(!selection.canceled){
             setAvatarImage(selection.assets[0].uri);
-            //pending save to Async & set to nav profile icon too
+            //save to Async & set to nav profile icon too
             storeProfileImage(selection.assets[0].uri);
         }else if(selection.canceled){
             console.log('image selection canceled.')
@@ -93,11 +114,20 @@ export default function ProfileScreen({navigation, route}){
             const userEmail = await AsyncStorage.getItem('userEmail');
             const userPhone = await AsyncStorage.getItem('phoneNumber');
             //const userPassword = await AsyncStorage.getItem('userPassword');
+            const userOrderStatus = await AsyncStorage.getItem('orderStatus');
+            const userPasswordChanges = await AsyncStorage.getItem('passwordChanges');
+            const userSpecialOffers = await AsyncStorage.getItem('specialOffers');
+            const userNewsletter = await AsyncStorage.getItem('newsletter');
             updateImage(userProfileImageURI);
             updateFname(userFirstName); 
             updateLname(userLastName);
             updateMail(userEmail);
-            updateNum(userPhone);
+            userPhone ? (updateNum(userPhone)) : updateNum('+1(###)###-###');
+            userOrderStatus ? (toggleOrderStatus(userOrderStatus)) : (toggleOrderStatus(true));
+            userPasswordChanges ? (togglePasswordChanges(userPasswordChanges)) : (togglePasswordChanges(true));
+            userSpecialOffers ? (toggleSpecialOffers(userSpecialOffers)) : (toggleSpecialOffers(true));
+            userNewsletter? (toggleNewsletter(userNewsletter)) : (toggleNewsletter(true));
+            //console.log('notifications:[',userOrderStatus,userPasswordChanges,userSpecialOffers,userNewsletter,']');
             //console.log('user profile:', userFirstName, userLastName, userEmail, userPhone, userProfileImageURI)
         } catch (error) {
             console.log('retrieving user profile data error:', error)
@@ -106,15 +136,19 @@ export default function ProfileScreen({navigation, route}){
     const storeAllUserProfileData = async () => {
         console.log('storing all profile data');
         console.log('setting values:', firstName, lastName, email, phone)
-        if(firstName != '' || lastName != '' || email != '' || phone != ''){
+        if(isFormValid && (firstName != '' || lastName != '' || email != '' || phone != '')){
            //edits made 
            try {
                 firstName != '' ? await AsyncStorage.setItem('firstName', firstName) : console.log('no first name change');
                 lastName != '' ? await AsyncStorage.setItem('lastName', lastName) : console.log('no last name change');
                 email != '' ? await AsyncStorage.setItem('userEmail', email) : console.log('no email change');
                 phone != '' ? await AsyncStorage.setItem('phoneNumber', phone) : console.log('no phone number change');
+                await AsyncStorage.setItem('orderStatus', `${orderStatus}` );
+                await AsyncStorage.setItem('passwordChanges', `${passwordChanges}`);
+                await AsyncStorage.setItem('specialOffers', `${specialOffers}`);
+                await AsyncStorage.setItem('newsletter', `${newsletter}`);
                 
-                Alert.alert('Updated','Changes have been saved.')
+                Alert.alert('Updated','Changes have been saved.');
                 
             } catch (error) {
                 console.log('error storing user profile data:', error)
@@ -205,6 +239,7 @@ export default function ProfileScreen({navigation, route}){
                         placeholder={'Type your email'}
                         keyboardType="email-address"
                         textContentType="emailAddress"
+                        onEndEditing={inlineEmailValidation}
                     />
                     <Text style={styles.inputLabel}>Phone Number</Text>
                     <TextInput 
@@ -212,8 +247,9 @@ export default function ProfileScreen({navigation, route}){
                         value={phone == '' ? num : phone}
                         onChangeText={onChangePhone}
                         placeholder={'Type your phone number'}
-                        keyboardType="number-pad"
+                        keyboardType="phone-pad"
                         textContentType="telephoneNumber"
+                        onEndEditing={updatePhoneFormat}
                     />
                     <Text style={styles.h2}>Email Notifications</Text>
                     <View style={styles.checkboxRow}>
