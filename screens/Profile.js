@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import CheckBox from 'expo-checkbox';
 import * as ImagePicker from 'expo-image-picker';
-import { localData, clearLocalData } from '../utils/localData';
+//import { localData, clearLocalData } from '../utils/localData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { validateName, validateEmail, validateUSPhone } from '../utils';
-import { MainHeader, BackHeader } from './components/Header';
+import { BackHeader } from './components/Header';
 
 export default function ProfileScreen({navigation, route}){
     console.log('Profile Screen');
@@ -96,7 +96,7 @@ export default function ProfileScreen({navigation, route}){
         console.log('clearing data...');
         try {
             await AsyncStorage.setItem('userLoggedIn','false');
-            localData.online = false;
+            //localData.online = false;
             //clearLocalData();
         } catch (error) {
             //clearing error
@@ -200,7 +200,7 @@ export default function ProfileScreen({navigation, route}){
                             }
                             style={styles.updateButton}
                             >
-                            <Text style={styles.updateButtonText}>Update</Text>
+                            <Text style={styles.updateButtonText}>Change</Text>
                         </Pressable>
                         <Pressable onPress={ () => {
                                 console.log('remove Avatar icon');
@@ -464,7 +464,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         padding: 10,
-        width: 350,
+        width: 300,
         borderRadius: 8,
     },
     mainButtonText: {

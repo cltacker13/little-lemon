@@ -187,14 +187,15 @@ const styles = StyleSheet.create({
     menuInnerSymbol: {
         height: 28,
         width: 50,
-        borderTopWidth: 11,
-        borderBottomWidth: 11,
+        borderTopWidth: 10,
+        borderBottomWidth: 10,
         borderTopColor: 'white',
         borderBottomColor: 'white',
     },
     backIcon: {
         width: 50,
         height: 50,
+        padding: 5,
         borderRadius: 26,
         alignSelf: 'flex-start',
         alignItems: 'center',
@@ -217,9 +218,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     backImage: {
-        width: 50,
-        height: 50,
+        width: 30,
+        height: 30,
         borderRadius: 26,
+        resizeMode: 'contain'
     },
     imageContainer: {
         //alignItems: 'center',

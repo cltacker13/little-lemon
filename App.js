@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 //import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { localData, retrieveAllLocalData, updateLocalData } from './utils/localData';
+//import { localData, retrieveAllLocalData, updateLocalData } from './utils/localData';
 
 import SplashScreen from './screens/Splash';
 import OnboardingScreen from './screens/Onboarding';
@@ -28,7 +28,7 @@ export default function App() {
   console.log('App:');
   //retrieveAllLocalData();
   const [isLoading, updateIsLoading] = useState(true);  
-  const [isLoggedIn, updateIsLoggedIn] = useState(localData.online);
+  const [isLoggedIn, updateIsLoggedIn] = useState(false);
 
   //console.log('localData: ',localData);
 
@@ -62,7 +62,7 @@ export default function App() {
 
           if(userLoggedIn === 'true'){
             updateIsLoggedIn(true);
-            updateLocalData(userFirstName, userEmail, userPassword, userLoggedIn);
+            //updateLocalData(userFirstName, userEmail, userPassword, userLoggedIn);
             //console.log('retrieve local data on App:',localData)
             //console.log(`user ${userFirstName} is logged in: ${userLoggedIn}`);
           } else {

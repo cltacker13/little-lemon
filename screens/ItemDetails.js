@@ -1,10 +1,16 @@
 import { View, Pressable, Image, Text, StyleSheet } from "react-native"
 import { BackHeader } from "./components/Header";
+import { useState } from "react";
 
 export default function ItemScreen({navigation, route}){
     console.log('Item Details Screen');
     const item = route.params.item;
-    console.log(item);
+    const [quantity, updateQuantity] = useState(1);
+    //console.log(item);
+
+    if(quantity<1){
+        updateQuantity(1);
+    };
 
     return (
         <View style={styles.container}>
@@ -21,8 +27,39 @@ export default function ItemScreen({navigation, route}){
                         <Text style={styles.itemDesc}>{item.description}</Text>
                     </View>
                 </View>
-                <View>
-                    {/*add quantity & add to cart button pending*/}
+                <View >
+                    <View style={styles.buttonRow}>
+                        <Pressable onPress={ () => {
+                                console.log('Minus'),
+                                updateQuantity(quantity-1)
+                                }
+                            }
+                            style={styles.quantityButton}
+                        >
+                            <Text style={styles.quantityButtonText}>-</Text>
+                        </Pressable>
+                        <Text style={styles.quantityButtonText}>{quantity}</Text>
+                        <Pressable onPress={ () => {
+                                console.log('Plus'),
+                                updateQuantity(quantity+1)
+                                }
+                            }
+                            style={styles.quantityButton}
+                        >
+                            <Text style={styles.quantityButtonText}>+</Text>
+                        </Pressable>
+                    </View>
+                    <View style={styles.buttonRow}>
+                        <Pressable onPress={ () => {
+                                console.log(`Adding ${quantity} ${item.name} to Cart`)
+                                //navigation.navigate('Cart',{item,quantity})
+                                }
+                            }
+                            style={styles.mainButton}
+                        >
+                            <Text style={styles.mainButtonText}>Add to Cart</Text>
+                        </Pressable>
+                    </View>
                 </View>
             </View>
         </View>
@@ -86,12 +123,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
     },
-
     item: {
         flexDirection: 'column',
         //justifyContent: 'space-between',
         alignItems: 'flex-start',
         padding: 10,
+        height: 550,
     },
     itemText: {
       flexDirection: 'column',
@@ -127,5 +164,42 @@ const styles = StyleSheet.create({
       width: 400,
       alignSelf: 'center',
       marginBottom: 25,
+    },
+    buttonRow: {
+        marginVertical: 10,
+        flexDirection: 'row',
+        //alignContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        //justifyContent: 'center',
+        maxHeight: 100,
+        marginTop: 15,
+    },
+    quantityButton: {
+        height: 50,
+        width: 50,
+        alignContent: 'center',
+        justifyContent: 'center',
+        marginHorizontal: 15,
+    },
+    quantityButtonText: {
+        fontSize: 26,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    mainButton: {
+        backgroundColor: '#F4CE14',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        padding: 10,
+        width: 300,
+        height: 50,
+        borderRadius: 8,
+        marginTop: 15,
+    },
+    mainButtonText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'black',
     },
 })
