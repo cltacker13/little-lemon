@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View, Alert } from 'react-native';
+import CheckBox from 'expo-checkbox';
 import { validatePassword, confirmPassword } from '../utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { localData } from '../utils/localData';
-import { BackHeader } from './components/Header';
+import { WelcomeBackHeader } from './components/Header';
 
 export default function SignUpScreen({navigation, route}){
     console.log('SignUp Screen');
@@ -11,30 +11,34 @@ export default function SignUpScreen({navigation, route}){
 
     const [password, onChangePassword] = useState('');
     const [passConfirm, onChangePassConfirm] = useState('');
+    const [termsAgreement, toggleTermsAgreement] = useState(true);
     const isPasswordValid = validatePassword(password);
     const isPassConfirmValid = confirmPassword(password, passConfirm);
-    const isFormValid = (isPasswordValid && isPassConfirmValid);
+    const isFormValid = (isPasswordValid && isPassConfirmValid && termsAgreement);
     
     const storeData = async () => {
         console.log('saving sign up data...');
-        try {
-            await AsyncStorage.multiSet(
-                [['userLoggedIn', 'true'],
-                ['userPassword', password]]
-            )
-            localData.online = true;
-            updateIsLoggedIn(true);
-            console.log('sign up data saved', password);
+        if(isFormValid){
             try {
-                const onlineStatus = await AsyncStorage.getItem('userLoggedIn');
-                console.log('online status',onlineStatus);
+                await AsyncStorage.multiSet(
+                    [['userLoggedIn', 'true'],
+                    ['userPassword', password]]
+                )
+                updateIsLoggedIn(true);
+                //console.log('sign up data saved', password);
+                /*try {
+                    const onlineStatus = await AsyncStorage.getItem('userLoggedIn');
+                    //console.log('online status',onlineStatus);
+                } catch (error) {
+                    console.log('error fetching updated online status:', error);
+                }*/
+                //navigation.navigate('Profile'); 
             } catch (error) {
-                console.log('error fetching updated online status:', error);
+            //saving error
+            console.log('saving error at sign up:', error);
             }
-            //navigation.navigate('Profile'); 
-        } catch (error) {
-          //saving error
-          console.log('saving error at sign up:', error);
+        } else {
+            Alert.alert('Recheck your information', 'Please check both password entries for typos.');
         }
       };
 
@@ -51,7 +55,7 @@ export default function SignUpScreen({navigation, route}){
 
     return (
         <View style={styles.container}>
-            <BackHeader navigation={navigation}/>
+            <WelcomeBackHeader navigation={navigation} />
             <View style={styles.main}>
                 <Text style={styles.h1}>Welcome!</Text>
                 <Text style={styles.h2}>Create a Password</Text>
@@ -79,11 +83,19 @@ export default function SignUpScreen({navigation, route}){
                         onEndEditing={inlinePasswordCheckValidation}
                     />
                 </View>
+                <View style={styles.checkboxRow}>
+                    <CheckBox
+                        value={termsAgreement}
+                        onValueChange={toggleTermsAgreement}
+                        color={'#495E57'}
+                        style={styles.checkbox}
+                    />
+                    <Text style={styles.inputLabel}>I have read and agree with the Terms of Use and Privacy Policy.</Text>
+                </View>
                 <Pressable
                     onPress={ () => {
-                        console.log(password, passConfirm),
-                        storeData(),
-                        updateIsLoggedIn(true)
+                        //console.log(password, passConfirm),
+                        storeData()
                         }
                     }
                     style={[styles.button, !isFormValid && styles.buttonDisabled]}
@@ -145,7 +157,7 @@ const styles = StyleSheet.create({
     },
     inputBox: {
         height: 40,
-        width: 250,
+        width: 300,
         marginVertical: 24,
         borderRadius: 8,
         borderWidth: 1,
@@ -154,20 +166,37 @@ const styles = StyleSheet.create({
         borderColor: '#EDEFEE',
     },
     button: {
-        width: 80,
+        width: 150,
+        height: 50,
         borderRadius: 8,
         backgroundColor: '#495E57',
         flexDirection: 'row',
         justifyContent: 'center',
-        padding: 8,
+        padding: 10,
+        alignSelf: 'flex-end',
     },
     buttonDisabled: {
         backgroundColor: 'grey',
         opacity: 0.5,
     },
     buttonText: {
-        fontSize: 16,
+        fontSize: 20,
+        fontWeight: 'bold',
         color: 'white',
     },
+    checkboxRow: {
+        marginVertical: 10,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignContent: 'flex-start',
+        width: 300,
+        marginBottom: 25,
+        marginTop: 160,
+    },
+    checkbox: {
+        alignSelf: 'flex-start',
+        marginRight: 12,
+        borderRadius: 3,
+    },   
 
 });

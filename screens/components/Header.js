@@ -3,6 +3,7 @@ import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 //import logo from '../../assets/ll-images/Logo.png';
 
+const backIcon = 'https://github.com/cltacker13/little-lemon/blob/master/assets/whitebackarrow.png?raw=true';
 const logoImage = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-images/Logo.png?raw=true';
 const tillyImage = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-images/Profile.png?raw=true';
 
@@ -91,7 +92,8 @@ export function BackHeader({navigation}){
                 }
                 style={styles.backIcon}
             >
-                <Text style={styles.backArrow}>{back}</Text>
+                <Image source={{uri: backIcon}}
+                    style={styles.backImage}/>
             </Pressable>
             <View style={styles.imageContainer}>
                 <Image source={{uri: logoImage}}
@@ -110,6 +112,42 @@ export function BackHeader({navigation}){
                     ( <Text style={styles.profileIconText}>{profileInitials}</Text>
                     )}
             </Pressable>
+        </View>
+    )
+}
+
+export function WelcomeHeader(){
+
+    return(
+        <View style={styles.header}>
+            
+            <View style={styles.imageContainer}>
+                <Image source={{uri: logoImage}}
+                    style={styles.logo}/>
+            </View>
+            
+        </View>
+    )
+}
+
+export function WelcomeBackHeader({navigation}){
+    //const back = `<-`;
+
+    return(
+        <View style={styles.header}>
+            <Pressable onPress={ () => {
+                    navigation.goBack()}
+                }
+                style={styles.backIcon}
+            >
+                <Image source={{uri: backIcon}}
+                    style={styles.backImage}/>
+            </Pressable>
+            <View style={styles.imageContainer}>
+                <Image source={{uri: logoImage}}
+                    style={styles.logo}/>
+            </View>
+            <View style={styles.blankProfileIcon}></View>
         </View>
     )
 }
@@ -178,6 +216,11 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
     },
+    backImage: {
+        width: 50,
+        height: 50,
+        borderRadius: 26,
+    },
     imageContainer: {
         //alignItems: 'center',
         alignSelf: 'center',
@@ -193,6 +236,14 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         //overflow: 'visible'
         //marginBottom: 32,
+    },
+    blankProfileIcon: {
+        width: 50,
+        height: 50,
+        borderRadius: 26,
+        alignSelf: 'flex-end',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     profileIcon: {
         width: 50,

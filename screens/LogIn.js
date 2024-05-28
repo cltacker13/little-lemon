@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { validateEmail, validatePassword } from '../utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { localData, retrieveAllLocalData, storeAllLocalData, updateLocalData } from '../utils/localData';
+import { WelcomeHeader } from './components/Header';
 
 export default function LogInScreen({navigation, route}){
     console.log('Login Screen');
@@ -15,40 +15,38 @@ export default function LogInScreen({navigation, route}){
 
     const storeOnlineStatus = async () => {
         console.log('saving online status ...');
-        try {
-            const userEmail = await AsyncStorage.getItem('userEmail');
-            const userPassword = await AsyncStorage.getItem('userPassword'); 
-            if(userEmail == email && userPassword == password){    
-                try {
-                    await AsyncStorage.setItem(
-                        'userLoggedIn', 'true'
-                    )
-                    localData.online = true;
-                    updateIsLoggedIn(true);
-                    console.log('saved firstopen data');
-                } catch (error) {
-                //saving error
-                    console.log('error saving online status: ', error);  
+        if(isFormValid){
+            try {
+                const userEmail = await AsyncStorage.getItem('userEmail');
+                const userPassword = await AsyncStorage.getItem('userPassword'); 
+                if(userEmail == email && userPassword == password){    
+                    try {
+                        await AsyncStorage.setItem(
+                            'userLoggedIn', 'true'
+                        )
+                        updateIsLoggedIn(true);
+                        console.log('saved firstopen data');
+                    } catch (error) {
+                    //saving error
+                        console.log('error saving online status: ', error);  
+                    }
+                } else {
+                    console.log('invalid login creds');
+                    Alert.alert('Invalid Email & Password', 'Please try again with valid email and password.')
                 }
-            } else {
-                console.log('invalid login creds');
-                Alert.alert('Invalid Email & Password', 'Please try again with valid email and password.')
+            } catch (error) {
+            //retrieving error
+            console.log('error retreiving login creds: ', error);
             }
-        } catch (error) {
-          //retrieving error
-          console.log('error retreiving login creds: ', error);
-        }
+        } else {
+            Alert.alert('Recheck your information', 'Please check email and password for typos.');
+        };
       };
 
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <View style={styles.imageContainer}>
-                    <Image source={require('./assets/Logo.png')} 
-                    style={styles.logo}/>
-                </View>
-            </View>
+            <WelcomeHeader />
             <View style={styles.main}>
                 <Text style={styles.h1}>Welcome Back!</Text>
                 <Text style={styles.h2}>Log into your account</Text>
@@ -73,10 +71,20 @@ export default function LogInScreen({navigation, route}){
                         secureTextEntry={true}
                     />
                 </View>
+                <View style={styles.main}>
+                    <Text style={{fontWeight: 'bold', paddingBottom: 5}}>New Customer?</Text>
+                    <Pressable
+                        onPress={ () => {
+                            navigation.navigate('Onboarding')}
+                        }
+                        style={styles.mainButton}
+                    >
+                        <Text style={styles.mainButtonText}>Sign Up</Text>
+                    </Pressable>
+                </View>
                 <Pressable
                     onPress={ () => {
                         storeOnlineStatus()
-                        //navigation.navigate('Profile')
                         }
                     }
                     style={[styles.button, !isFormValid && styles.buttonDisabled]}
@@ -138,7 +146,7 @@ const styles = StyleSheet.create({
     },
     inputBox: {
         height: 40,
-        width: 250,
+        width: 300,
         marginVertical: 24,
         borderRadius: 8,
         borderWidth: 1,
@@ -147,20 +155,38 @@ const styles = StyleSheet.create({
         borderColor: '#EDEFEE',
     },
     button: {
-        width: 80,
+        width: 150,
+        height: 50,
         borderRadius: 8,
         backgroundColor: '#495E57',
         flexDirection: 'row',
         justifyContent: 'center',
-        padding: 8,
+        padding: 10,
+        alignSelf: 'flex-end',
+        marginTop: 100,
     },
     buttonDisabled: {
         backgroundColor: 'grey',
         opacity: 0.5,
     },
     buttonText: {
-        fontSize: 16,
+        fontSize: 20,
+        fontWeight: 'bold',
         color: 'white',
+    },
+    mainButton: {
+        backgroundColor: '#F4CE14',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        padding: 10,
+        width: 200,
+        height: 50,
+        borderRadius: 8,
+    },
+    mainButtonText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: 'black',
     },
 
 });

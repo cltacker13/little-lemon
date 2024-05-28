@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, TextInput, View, Alert } from 'react-native';
 import { validateName, validateEmail } from '../utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { localData, retrieveAllLocalData } from '../utils/localData';
+import { WelcomeHeader } from './components/Header';
 
 export default function OnboardingScreen({navigation}){
     console.log('Onboarding Screen');
-    retrieveAllLocalData();
     const [firstName, onChangeFirstName] = useState('');
     const [email, onChangeEmail] = useState('');
     const isFirstNameValid = validateName(firstName);
@@ -15,17 +14,21 @@ export default function OnboardingScreen({navigation}){
 
     const storeData = async () => {
         console.log('saving sign up data...');
-        try {
-          await AsyncStorage.multiSet(
-            [['firstName', firstName],
-            ['userEmail', email]]
-          )
-          console.log('onboarding data saved for',firstName);
-          navigation.navigate('SignUp');
-        } catch (error) {
-          //saving error
-          console.log('saving error at onboarding:', error);
-        }
+        if(isFormValid){
+            try {
+                await AsyncStorage.multiSet(
+                    [['firstName', firstName],
+                    ['userEmail', email]]
+                )
+                //console.log('onboarding data saved for',firstName);
+                navigation.navigate('SignUp');
+            } catch (error) {
+                //saving error
+                console.log('saving error at onboarding:', error);
+            }
+        } else {
+            Alert.alert('Recheck your information', 'Please check your name and email for typos.');
+        };
       };
 
     const inlineNameValidation = () => {
@@ -35,18 +38,13 @@ export default function OnboardingScreen({navigation}){
     }
     const inlineEmailValidation = () => {
         if(!isEmailValid){
-            Alert.alert('Enter a valid email', 'Please enter another email address. Example: user@website.com.');
+            Alert.alert('Enter a valid email', 'Please enter an email address. Example: user@website.com.');
         }
     }
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <View style={styles.imageContainer}>
-                    <Image source={require('./assets/Logo.png')} 
-                    style={styles.logo}/>
-                </View>
-            </View>
+            <WelcomeHeader />
             <View style={styles.main}>
 
                 <Text style={styles.h1}>Welcome!</Text>
@@ -60,6 +58,7 @@ export default function OnboardingScreen({navigation}){
                         placeholder={'Type your first name'}
                         keyboardType="default"
                         textContentType="givenName"
+                        onEndEditing={inlineNameValidation}
                     />
                     <Text style={styles.inputLabel}>Email Address</Text>
                     <TextInput 
@@ -74,7 +73,7 @@ export default function OnboardingScreen({navigation}){
                 </View>
 
                 <View style={styles.main}>
-                    <Text>Already have an account?</Text>
+                    <Text style={{fontWeight: 'bold', paddingBottom: 5}}>Returning Customer?</Text>
                     <Pressable
                         onPress={ () => {
                             navigation.navigate('LogIn')}
@@ -87,7 +86,7 @@ export default function OnboardingScreen({navigation}){
 
                 <Pressable
                     onPress={ () => {
-                        console.log(firstName, email),
+                        //console.log(firstName, email),
                         storeData()}
                     }
                     style={[styles.button, !isFormValid && styles.buttonDisabled]}
@@ -124,7 +123,7 @@ const styles = StyleSheet.create({
     main: {
         alignItems: 'center',
         justifyContent: 'center',
-        paddingBottom: 50,
+        paddingBottom: 150,
     },
     h1: {
         //fontFamily: 'karla',
@@ -146,7 +145,7 @@ const styles = StyleSheet.create({
     },
     inputBox: {
         height: 40,
-        width: 250,
+        width: 300,
         marginVertical: 24,
         borderRadius: 8,
         borderWidth: 1,
@@ -155,19 +154,21 @@ const styles = StyleSheet.create({
         borderColor: '#EDEFEE',
     },
     button: {
-        width: 80,
+        width: 150,
+        height: 50,
         borderRadius: 8,
         backgroundColor: '#495E57',
         flexDirection: 'row',
         justifyContent: 'center',
-        padding: 8,
+        padding: 10,
+        alignSelf: 'flex-end',
     },
     buttonDisabled: {
         backgroundColor: 'grey',
         opacity: 0.5,
     },
     buttonText: {
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: 'bold',
         color: 'white',
     },
@@ -176,11 +177,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         padding: 10,
-        width: 250,
+        width: 200,
+        height: 50,
         borderRadius: 8,
     },
     mainButtonText: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
         color: 'black',
     },

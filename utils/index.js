@@ -26,7 +26,7 @@ export const validateName = (name) => {
 };
 
 export const validatePassword = (password) => {
-  /*'Password must contain one digit from 1 to 9, 
+  /*'Password must contain one digit from 1 to 9, (not from 0 - 9 ?)
   one lowercase letter, one uppercase letter, 
   one special character, no space, 
   and it must be 8-16 characters long.'*/
