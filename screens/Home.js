@@ -37,8 +37,8 @@ const sections = ['starters', 'mains', 'desserts'];
 const ItemSepatator = () => (
   <View style={styles.itemSepatator}></View>
 );
-const Item = ({ /*category, id,*/ name, price, description, image }) => (
-    <View style={styles.itemCard} /*id={category} key={id}*/>
+const Item = ({ category, /*id,*/ name, price, description, image }) => (
+    <View style={styles.itemCard} id={category} /*key={id}*/>
       <View style={styles.itemText}>
         <Text style={styles.title}>{name}</Text>
         <Text style={styles.itemDesc}>{description}</Text>
@@ -104,9 +104,9 @@ export default function HomeScreen({navigation}){
             saveMenuItems(menuItems); 
             //console.log('fetched to createTable:',menuItems);
           } 
-  
-          const sectionListData = getSectionListData(menuItems);
-          setData(sectionListData);
+          setData(menuItems);
+          /*const sectionListData = getSectionListData(menuItems);
+          setData(sectionListData);*/
         } catch (err) {
           // Handle error 
           Alert.alert(err.message); 
@@ -134,8 +134,9 @@ export default function HomeScreen({navigation}){
             activeCategories
           );
           //console.log('menuitems after filter:',menuItems)
-          const sectionListData = getSectionListData(menuItems);
-          setData(sectionListData);
+          /*const sectionListData = getSectionListData(menuItems);
+          setData(sectionListData);*/
+          setData(menuItems);
         } catch (err) {
           Alert.alert(err.message);
         }
@@ -197,10 +198,10 @@ export default function HomeScreen({navigation}){
                 </View>
                 <View style={styles.menuList}>
                   {/*console.log('data for FlatList:',data[0].data[0].name)*/}
-                  <SectionList //FlatList
+                  <FlatList //SectionList
                     style={styles.sectionList}
-                    //data={data} 
-                    sections={data}
+                    data={data} 
+                    //sections={data}
                     keyExtractor={(item,index) => item+index} //{(item) => item.id}
                     renderItem={({ item }) => (
                       <Pressable onPress={ () => {
@@ -208,7 +209,7 @@ export default function HomeScreen({navigation}){
                         navigation.navigate('ItemDetails',{item})
                       }}>
                         <Item //id={item.id} title={item.title} price={item.price} 
-                          //category={item.title} id={item.id}
+                          category={item.title} // id={item.id}
                           name={item.name} price={item.price} 
                           description={item.description} image={item.image}
                         />
@@ -216,9 +217,9 @@ export default function HomeScreen({navigation}){
                         )}
                     ListHeaderComponent={ItemSepatator}
                     ItemSeparatorComponent={ItemSepatator}
-                    renderSectionHeader={({ section: { title } }) => (
+                    /*renderSectionHeader={({ section: { title } }) => (
                     <ItemSepatator/>//<Text style={styles.sectionHeader}>{title}</Text>
-                    )}
+                    )}*/
                   />
                 </View>
 

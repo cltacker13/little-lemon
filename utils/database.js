@@ -124,8 +124,8 @@ export async function filterByQueryAndCategories(query, activeCategories) {
     filterParams += ` (category = '${activeCategories[0]}' OR category = '${activeCategories[1]}' OR category = '${activeCategories[2]}')` 
     break;
   }
-  if (query !== ''){
-    filterParams += ` AND (name LIKE '%${query}%' OR description LIKE '%${query}%')`;
+  if (query !== ''){ // also could filter via descriptions with: OR description LIKE '%${query}%'
+    filterParams += ` AND (name LIKE '%${query}%' )`;
   }
   //console.log(db);
   return new Promise((resolve, reject) => {
