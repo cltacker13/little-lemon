@@ -37,7 +37,18 @@ export default function SignUpScreen({navigation, route}){
           console.log('saving error at sign up:', error);
         }
       };
-    
+
+    const inlinePasswordValidation = () => {
+        if(!isPasswordValid){
+            Alert.alert('Try another password', 'Password should be 8-16 characters. It must contain one digit from 1 to 9, one lowercase letter, one uppercase letter, one special character, and no spaces.');
+        }
+    }
+    const inlinePasswordCheckValidation = () => {
+        if(!isPasswordValid){
+            Alert.alert('Passwords must match', 'Please try typing password again. Passwords must match.');
+        }
+    }
+
     return (
         <View style={styles.container}>
             <BackHeader navigation={navigation}/>
@@ -54,6 +65,7 @@ export default function SignUpScreen({navigation, route}){
                         keyboardType="default"
                         textContentType="password"
                         secureTextEntry={true}
+                        onEndEditing={inlinePasswordValidation}
                     />
                     <Text style={styles.inputLabel}>Confirm Password</Text>
                     <TextInput 
@@ -64,6 +76,7 @@ export default function SignUpScreen({navigation, route}){
                         keyboardType="default"
                         textContentType="password"
                         secureTextEntry={true}
+                        onEndEditing={inlinePasswordCheckValidation}
                     />
                 </View>
                 <Pressable

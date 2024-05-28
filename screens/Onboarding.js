@@ -28,9 +28,14 @@ export default function OnboardingScreen({navigation}){
         }
       };
 
+    const inlineNameValidation = () => {
+        if(!isFirstNameValid){
+            Alert.alert('Enter a first name', 'Please enter a first name using only letters and hyphen(-) characters.');
+        }
+    }
     const inlineEmailValidation = () => {
         if(!isEmailValid){
-            Alert.alert('Email is Invalid', 'Please enter another email address. Example: user@website.com.');
+            Alert.alert('Enter a valid email', 'Please enter another email address. Example: user@website.com.');
         }
     }
 
