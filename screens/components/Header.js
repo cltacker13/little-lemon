@@ -1,17 +1,16 @@
 import { View, Text, Pressable, Image, StyleSheet } from "react-native";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import logo from '../../assets/ll-images/Logo.png';
-//need to update profile icon to conditionally render image when exists.
+//import logo from '../../assets/ll-images/Logo.png';
 
 const logoImage = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-images/Logo.png?raw=true';
-
+const tillyImage = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-images/Profile.png?raw=true';
 
 export function MainHeader({navigation}){
     //const { updateIsLoggedIn } = route.params;
     const [uriExists, updateUriExists] = useState(false);
     const [profileInitials, updateInitials] = useState(':D');
-    const [profileImage, updateImage] = useState('');
+    const [profileImage, updateImage] = useState(tillyImage);
 
     const retrieveUserProfileData = async () => {
         //console.log('retrieving header user data');
@@ -19,7 +18,7 @@ export function MainHeader({navigation}){
             const userProfileImageURI = await AsyncStorage.getItem('userProfileImage');
             const userFirstName = await AsyncStorage.getItem('firstName');
             const userLastName = await AsyncStorage.getItem('lastName');
-            console.log(userProfileImageURI);
+            //console.log(userProfileImageURI);
             if(userProfileImageURI !== ''){
                 updateUriExists(true);
                 updateImage(userProfileImageURI);
@@ -41,7 +40,7 @@ export function MainHeader({navigation}){
                 <View style={styles.menuInnerSymbol}></View>
             </Pressable>
             <View style={styles.imageContainer}>
-                <Image source={{uri: logoImage}}//require('../../assets/ll-images/Logo.png')} 
+                <Image source={{uri: logoImage}}
                     style={styles.logo}/>
             </View>
             <Pressable onPress={ () => {
@@ -52,7 +51,7 @@ export function MainHeader({navigation}){
                 {uriExists ?
                     ( <Image style={styles.profileIcon} 
                         source={{uri: profileImage}}
-                      />
+                     />
                     ) :
                     ( <Text style={styles.profileIconText}>{profileInitials}</Text>
                     )}
@@ -66,7 +65,7 @@ export function BackHeader({navigation}){
     const back = `<-`;
     const [uriExists, updateUriExists] = useState(false);
     const [profileInitials, updateInitials] = useState(':D');
-    const [profileImage, updateImage] = useState('');
+    const [profileImage, updateImage] = useState(tillyImage);
 
     const retrieveUserProfileData = async () => {
         //console.log('retrieving header user data');
@@ -74,7 +73,7 @@ export function BackHeader({navigation}){
             const userProfileImageURI = await AsyncStorage.getItem('userProfileImage');
             const userFirstName = await AsyncStorage.getItem('firstName');
             const userLastName = await AsyncStorage.getItem('lastName');
-            console.log(userProfileImageURI);
+            //console.log(userProfileImageURI);
             if(userProfileImageURI !== ''){
                 updateUriExists(true);
                 updateImage(userProfileImageURI);
@@ -95,7 +94,7 @@ export function BackHeader({navigation}){
                 <Text style={styles.backArrow}>{back}</Text>
             </Pressable>
             <View style={styles.imageContainer}>
-                <Image source={{uri: logoImage}}//require('../../assets/ll-images/Logo.png')} 
+                <Image source={{uri: logoImage}}
                     style={styles.logo}/>
             </View>
             <Pressable onPress={ () => {
@@ -106,7 +105,7 @@ export function BackHeader({navigation}){
                 {uriExists ?
                     ( <Image style={styles.profileIcon} 
                         source={{uri: profileImage}}
-                      />
+                     />
                     ) :
                     ( <Text style={styles.profileIconText}>{profileInitials}</Text>
                     )}

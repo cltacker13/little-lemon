@@ -19,8 +19,8 @@ export async function dropTable(tableName) {
   
 
 export async function createTable() {
-  console.log('db exists:', db)
-  console.log('creating table: in', db._db._name);
+  //console.log('db exists:', db)
+  //console.log('creating table: in', db._db._name);
   //  'create table if not exists menuitems (id integer primary key not null, uuid text, title text, price text, category text);'
   return new Promise((resolve, reject) => {
     db.transaction(
@@ -53,11 +53,11 @@ export async function createTable() {
 
 
 export async function getMenuItems() {
-  console.log('getting menuitems from:',db._db._name);
+  //console.log('getting menuitems from:',db._db._name);
   return new Promise((resolve) => {
     db.transaction((tx) => {
       tx.executeSql('SELECT * FROM menuitems', [], (_, { rows }) => {
-        console.log('all from table:',JSON.stringify(rows))
+        //console.log('all from table:',JSON.stringify(rows))
         resolve(rows._array);
       });
     });

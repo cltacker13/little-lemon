@@ -95,7 +95,7 @@ export default function HomeScreen({navigation}){
 
           await createTable(); 
           let menuItems = await getMenuItems(); 
-          console.log('getmenuitems:',menuItems)
+          //console.log('getmenuitems:',menuItems)
           // The application only fetches the menu data once from a remote URL
           // and then stores it into a SQLite database.
           // After that, every application restart loads the menu from the database
