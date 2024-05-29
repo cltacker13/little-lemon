@@ -49,7 +49,7 @@ export default function CartScreen({navigation, route}){
         <View style={styles.container}>
             <BackHeader navigation={navigation}/>
             <View style={styles.main}>
-                <Text style={styles.h1}>ORDER FOR DELIVERY</Text>
+                <Text style={styles.h1}>ORDER FOR DELIVERY!</Text>
                 <Text style={styles.h2}>Items in Cart</Text>
                     <View style={styles.itemRow}>
                         <Item name={item.name} price={item.price} image={item.image} quantity={quantity}/>
@@ -77,6 +77,7 @@ export default function CartScreen({navigation, route}){
                             </Pressable>
                         </View>
                     </View>
+                    <ItemSepatator />
             
                 <Pressable onPress={ () => {
                         //console.log('Add more items'),
@@ -187,8 +188,9 @@ const styles = StyleSheet.create({
         width: 100,
     },
     itemSepatator: {
+        marginVertical: 10,
         height: 1,
-        width: 'auto',
+        width: 375,
         backgroundColor: '#D9D9D9',
     },
     buttonRow: {

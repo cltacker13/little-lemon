@@ -1,7 +1,3 @@
-//import { useState } from 'react';
-//import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-//import { localData } from '../utils/localData';
-
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   Text,
@@ -197,7 +193,6 @@ export default function HomeScreen({navigation}){
                   />
                 </View>
                 <View style={styles.menuList}>
-                  {/*console.log('data for FlatList:',data[0].data[0].name)*/}
                   <FlatList //SectionList
                     style={styles.sectionList}
                     data={data} 

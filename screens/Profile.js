@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import CheckBox from 'expo-checkbox';
 import * as ImagePicker from 'expo-image-picker';
-//import { localData, clearLocalData } from '../utils/localData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { validateName, validateEmail, validateUSPhone } from '../utils';
 import { BackHeader } from './components/Header';
@@ -96,8 +95,6 @@ export default function ProfileScreen({navigation, route}){
         console.log('clearing data...');
         try {
             await AsyncStorage.setItem('userLoggedIn','false');
-            //localData.online = false;
-            //clearLocalData();
         } catch (error) {
             //clearing error
             console.log('clearing data error: ', error);
@@ -309,7 +306,6 @@ export default function ProfileScreen({navigation, route}){
                 </View>
                 <View style={styles.buttonRow}>
                     <Pressable onPress={ () => {
-                            //clearLocalData(),
                             //clearData()
                             storeOfflineStatus(),
                             updateIsLoggedIn(false)

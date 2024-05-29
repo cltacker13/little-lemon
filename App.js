@@ -7,7 +7,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 //import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-//import { localData, retrieveAllLocalData, updateLocalData } from './utils/localData';
 
 import SplashScreen from './screens/Splash';
 import OnboardingScreen from './screens/Onboarding';
@@ -20,18 +19,14 @@ import CartScreen from './screens/Cart';
 
 const Stack = createNativeStackNavigator();
 
-//console.log('all local data:',retrieveAllLocalData());
 LogBox.ignoreLogs([   'Non-serializable values were found in the navigation state', 
-  //  'Each child in a list should have a unique "key" prop',
   ]);
 
 export default function App() {
   console.log('App:');
-  //retrieveAllLocalData();
   const [isLoading, updateIsLoading] = useState(true);  
   const [isLoggedIn, updateIsLoggedIn] = useState(false);
 
-  //console.log('localData: ',localData);
 
   const storeData = async () => {
     console.log('saving data...');
@@ -63,7 +58,6 @@ export default function App() {
 
           if(userLoggedIn === 'true'){
             updateIsLoggedIn(true);
-            //updateLocalData(userFirstName, userEmail, userPassword, userLoggedIn);
             //console.log('retrieve local data on App:',localData)
             //console.log(`user ${userFirstName} is logged in: ${userLoggedIn}`);
           } else {
@@ -85,7 +79,6 @@ export default function App() {
   },[]);
   
   //retrieveData();  
-  //retrieveAllLocalData();
 /*
   //if app is still loading from AsyncStorage
   if(isLoading) { 
@@ -97,9 +90,6 @@ export default function App() {
   //TODO: create logged in check/update -- runs too many calls.
   if(isLoggedIn){
     //retrieveData();
-    updateLocalData(userData.name, userData.email, userData.password, userData.online);
-    //localData.name = userData.name;
-    //localData.online = true;
     console.log('isLoggedIn:',isLoggedIn);
   }*/
 
