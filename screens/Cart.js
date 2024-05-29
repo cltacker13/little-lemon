@@ -1,6 +1,7 @@
 import { View, Pressable, Image, Text, StyleSheet } from "react-native"
 import { BackHeader } from "./components/Header";
 import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ItemSepatator = () => (
     <View style={styles.itemSepatator}></View>
@@ -31,6 +32,7 @@ export default function CartScreen({navigation, route}){
     const deliveryFee = (1.99);
     const [orderTotal, updateOrderTotal] = useState(itemSubtotal+tax+deliveryFee);
     //console.log(item);
+    const [cartArr, updateCartArr] = useState([item]);
 
     if(quantity<1){
         updateQuantity(1);
@@ -45,6 +47,23 @@ export default function CartScreen({navigation, route}){
         updateOrderTotal(newTotal);
     }
 
+    const retrieveCartItems = async () => {
+        console.log('retrieving cart items...');
+        try {
+            const userCartItems = await AsyncStorage.getItem('userCartItems');
+            if(userCartItems !== null && userCartItems !== ''){
+                console.log('async existing items in cart: ',userCartItems);
+                //TODO: need to convert back to object? to read & use for data flatlist.
+                console.log((userCartItems));
+    
+            }
+        } catch (error) {
+            //Error retrieving cart items
+            console.log('error retrieving cart items: ', error);
+        }
+    };
+
+    retrieveCartItems();
     return (
         <View style={styles.container}>
             <BackHeader navigation={navigation}/>

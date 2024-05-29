@@ -1,6 +1,7 @@
 import { View, Pressable, Image, Text, StyleSheet } from "react-native"
 import { BackHeader } from "./components/Header";
 import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ItemScreen({navigation, route}){
     console.log('Item Details Screen');
@@ -10,6 +11,29 @@ export default function ItemScreen({navigation, route}){
 
     if(quantity<1){
         updateQuantity(1);
+    };
+
+    const addItemToCart = async () => {
+        //console.log(quantity,item);
+        try {
+            const userCartItems = await AsyncStorage.getItem('userCartItems');
+            if(userCartItems !== null && userCartItems !== ''){
+                console.log('async existing items in cart: ',userCartItems);
+                //console.log(userCartItems);
+                //TODO: lists but saves as string.. work in progress.
+                let newItem = JSON.stringify({cart:[{quantity: quantity, item: item}]})
+                await AsyncStorage.setItem(
+                    'userCartItems',newItem)
+            }else{
+                console.log(`Adding: ${newItem}`)
+                //await AsyncStorage.setItem('userCartItems',`[${quantity},${item}]`)
+            }
+        } catch (error) {
+            //Error retrieving cart items
+            console.log('error retrieving cart items: ', error);
+        }
+
+
     };
 
     return (
@@ -52,6 +76,7 @@ export default function ItemScreen({navigation, route}){
                     <View style={styles.buttonRow}>
                         <Pressable onPress={ () => {
                                 console.log(`Adding ${quantity} ${item.name} to Cart`),
+                                addItemToCart(),
                                 navigation.navigate('Cart',{item,quantity})
                                 }
                             }
