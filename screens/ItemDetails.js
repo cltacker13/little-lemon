@@ -30,7 +30,7 @@ export default function ItemScreen({navigation, route}){
                 <View >
                     <View style={styles.buttonRow}>
                         <Pressable onPress={ () => {
-                                console.log('Minus'),
+                                //console.log('Minus'),
                                 updateQuantity(quantity-1)
                                 }
                             }
@@ -40,7 +40,7 @@ export default function ItemScreen({navigation, route}){
                         </Pressable>
                         <Text style={styles.quantityButtonText}>{quantity}</Text>
                         <Pressable onPress={ () => {
-                                console.log('Plus'),
+                                //console.log('Plus'),
                                 updateQuantity(quantity+1)
                                 }
                             }
@@ -51,8 +51,8 @@ export default function ItemScreen({navigation, route}){
                     </View>
                     <View style={styles.buttonRow}>
                         <Pressable onPress={ () => {
-                                console.log(`Adding ${quantity} ${item.name} to Cart`)
-                                //navigation.navigate('Cart',{item,quantity})
+                                console.log(`Adding ${quantity} ${item.name} to Cart`),
+                                navigation.navigate('Cart',{item,quantity})
                                 }
                             }
                             style={styles.mainButton}
