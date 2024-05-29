@@ -36,10 +36,13 @@ export default function CartScreen({navigation, route}){
         updateQuantity(1);
     };
 
-    const updatePricing = () => {
-        updateItemSubtotal(item.price*quantity);
-        updateTax(itemSubtotal*(0.0625));
-        updateOrderTotal(itemSubtotal+tax+deliveryFee);
+    const updatePricing = (num) => {
+        let newSub = (item.price*num);
+        let newTax = (newSub*(0.0625));
+        let newTotal = (newSub+newTax+deliveryFee);
+        updateItemSubtotal(newSub);
+        updateTax(newTax);
+        updateOrderTotal(newTotal);
     }
 
     return (
@@ -54,7 +57,7 @@ export default function CartScreen({navigation, route}){
                             <Pressable onPress={ () => {
                                     //console.log('Minus'),
                                     updateQuantity(quantity-1),
-                                    updatePricing()
+                                    updatePricing(quantity-1)
                                     }
                                 }
                                 style={styles.quantityButton}
@@ -65,7 +68,7 @@ export default function CartScreen({navigation, route}){
                             <Pressable onPress={ () => {
                                     //console.log('Plus'),
                                     updateQuantity(quantity+1),
-                                    updatePricing()
+                                    updatePricing(quantity+1)
                                     }
                                 }
                                 style={styles.quantityButton}
