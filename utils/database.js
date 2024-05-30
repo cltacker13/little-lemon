@@ -65,6 +65,20 @@ export async function getMenuItems() {
 
 }
 
+//select all by id, return 1st.
+export async function getMenuItemByID(id) {
+  //console.log('getting menuitems from:',db._db._name);
+  return new Promise((resolve) => {
+    db.transaction((tx) => {
+      tx.executeSql(`SELECT * FROM menuitems WHERE id = ${id}`, [], (_, { rows }) => {
+        console.log('1st id match from table:',rows._array[0])
+        resolve(rows._array[0]);
+      });
+    });
+  });
+
+}
+
 
 export async function saveMenuItems(menuItems) {
   let query = 'INSERT INTO menuitems (category, description, image, price, name) VALUES ';

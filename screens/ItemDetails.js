@@ -14,23 +14,43 @@ export default function ItemScreen({navigation, route}){
     };
 
     const addItemToCart = async () => {
-        //console.log(quantity,item);
+        console.log('Adding to cart:',`${item.id}|x|${quantity}`);
+        
+        let cartList = ''; //`${item.id}|x|${quantity}`;
         try {
+            //remove items in cart, for testing
+            //await AsyncStorage.removeItem('userCartItems');
+
             const userCartItems = await AsyncStorage.getItem('userCartItems');
             if(userCartItems !== null && userCartItems !== ''){
-                console.log('async existing items in cart: ',userCartItems);
-                //console.log(userCartItems);
-                //TODO: lists but saves as string.. work in progress.
-                let newItem = JSON.stringify({cart:[{quantity: quantity, item: item}]})
-                await AsyncStorage.setItem(
-                    'userCartItems',newItem)
+                //console.log('async existing items in cart: ',listArr);
+                const listArr = userCartItems.split(';').filter((item) => item != "");
+                const idsArr = [];
+                for(i=0;i<listArr.length;i++){
+                    let cartItemID = listArr[i].split('|x|')[0];
+                    let cartItemQuantity = listArr[i].split('|x|')[1];
+                    //checking for duplicate item ids.
+                    if(!idsArr.includes(cartItemID)){
+                        //add if not dup
+                        idsArr.push(cartItemID);
+                        cartList.concat(`${cartItemID}|x|${cartItemQuantity};`);
+                    }else{
+                        //dup item id was found
+                        console.log(cartItemID,'already exists in item list.');
+                        //TODO: handle repeating items.
+                    }
+                    //console.log(`item#${i+1}:`,cartItemDetails, 'x', cartItemQuantity);
+                }
+                console.log('final cartList:',cartList);
+                await AsyncStorage.setItem('userCartItems',`${cartList}`)
             }else{
+                let newItem = `${item.id}|x|${quantity}`;
                 console.log(`Adding: ${newItem}`)
-                //await AsyncStorage.setItem('userCartItems',`[${quantity},${item}]`)
+                await AsyncStorage.setItem('userCartItems',newItem)
             }
         } catch (error) {
             //Error retrieving cart items
-            console.log('error retrieving cart items: ', error);
+            console.log('error retrieving existing cart items to Add: ', error);
         }
 
 

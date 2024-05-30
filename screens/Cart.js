@@ -1,7 +1,8 @@
-import { View, Pressable, Image, Text, StyleSheet } from "react-native"
+import { View, Pressable, Image, Text, StyleSheet, Alert, FlatList } from "react-native"
 import { BackHeader } from "./components/Header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getMenuItemByID } from "../utils/database";
 
 const ItemSepatator = () => (
     <View style={styles.itemSepatator}></View>
@@ -23,7 +24,7 @@ const formatPrice = (price) => {
 }
 
 export default function CartScreen({navigation, route}){
-    console.log('Item Details Screen');
+    console.log('Cart Screen');
     const item = route.params.item;
     const itemQuantity = route.params.quantity;
     const [quantity, updateQuantity] = useState(itemQuantity);
@@ -32,7 +33,7 @@ export default function CartScreen({navigation, route}){
     const deliveryFee = (1.99);
     const [orderTotal, updateOrderTotal] = useState(itemSubtotal+tax+deliveryFee);
     //console.log(item);
-    const [cartArr, updateCartArr] = useState([item]);
+    const [cartArr, updateCartArr] = useState([item,quantity]);
 
     if(quantity<1){
         updateQuantity(1);
@@ -49,21 +50,51 @@ export default function CartScreen({navigation, route}){
 
     const retrieveCartItems = async () => {
         console.log('retrieving cart items...');
+        //console.log(item.id,` x${quantity};`);
+        let cartList = [[item,quantity]];
         try {
             const userCartItems = await AsyncStorage.getItem('userCartItems');
+            console.log('userCartItems:',userCartItems);
+            //for existing items?
             if(userCartItems !== null && userCartItems !== ''){
-                console.log('async existing items in cart: ',userCartItems);
-                //TODO: need to convert back to object? to read & use for data flatlist.
-                console.log((userCartItems));
-    
+                //console.log('async existing items in cart: ',listArr);
+                const listArr = userCartItems.split(';').filter((item) => item != "");
+                for(i=0;i<listArr.length;i++){
+                    let cartItemID = listArr[i].split('|x|')[0];
+                    let cartItemQuantity = listArr[i].split('|x|')[1];
+                    let cartItemDetails = await getMenuItemByID(cartItemID);
+                    //console.log(`item#${i+1}:`,cartItemDetails, 'x', cartItemQuantity);
+                    cartList.push([cartItemDetails,cartItemQuantity]);
+                }
+            console.log('cartList:',cartList);
+            return cartList;
+            }else{
+                console.log('New cartList:',cartList)
+                //Alert.alert('Oops','Your cart appears to be empty.');
             }
         } catch (error) {
             //Error retrieving cart items
-            console.log('error retrieving cart items: ', error);
+            console.log('error retrieving cart items for Cart: ', error);
         }
     };
 
-    retrieveCartItems();
+    useEffect(() => {
+        (async () => {
+          try {  
+            let cartList = await retrieveCartItems();
+            console.log('useEffect retrieved:',cartList); 
+            updateCartArr(cartList);
+            if(!cartList){
+                console.log('useEffect retrieved nothing');
+            }
+          } catch (err) {
+            // Handle error 
+            Alert.alert(err.message); 
+          } 
+        })();
+      }, []);
+
+    
     return (
         <View style={styles.container}>
             <BackHeader navigation={navigation}/>
@@ -72,6 +103,21 @@ export default function CartScreen({navigation, route}){
                 <Text style={styles.h2}>Items in Cart</Text>
                     <View style={styles.itemRow}>
                         <Item name={item.name} price={item.price} image={item.image} quantity={quantity}/>
+                        <FlatList //SectionList
+                            //style={styles.itemRow}
+                            data={cartArr} //can't be an array -- should be an object?
+                            //sections={data}
+                            //keyExtractor={(item,index) => item+index} //{(item) => item.id}
+                            renderItem={({ item }) => (
+                                <Item 
+                                name={item[0].name} price={item[0].price} 
+                                image={item[0].image}
+                                />
+                                )}
+                            //ListHeaderComponent={ItemSepatator}
+                            ItemSeparatorComponent={ItemSepatator}
+                        />
+                        
                         <View style={styles.buttonRow}>
                             <Pressable onPress={ () => {
                                     //console.log('Minus'),
@@ -110,7 +156,6 @@ export default function CartScreen({navigation, route}){
             </View>
             <View style={styles.checkoutSection}>
                 <View>
-                    {/*Price totals -- TODO: Pending to limit values 2 decimal places */}
                     <Text style={styles.orderPrice}>Item Subtotal:            ${formatPrice(itemSubtotal)}</Text>
                     <Text style={styles.orderPrice}>Total Tax:                    ${formatPrice(tax)}</Text>
                     <Text style={styles.orderPrice}>Delivery Fee:               ${formatPrice(deliveryFee)}</Text>
