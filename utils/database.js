@@ -71,7 +71,7 @@ export async function getMenuItemByID(id) {
   return new Promise((resolve) => {
     db.transaction((tx) => {
       tx.executeSql(`SELECT * FROM menuitems WHERE id = ${id}`, [], (_, { rows }) => {
-        console.log('1st id match from table:',rows._array[0])
+        //console.log('1st id match from table:',rows._array[0])
         resolve(rows._array[0]);
       });
     });

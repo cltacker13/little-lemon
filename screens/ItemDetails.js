@@ -22,22 +22,28 @@ export default function ItemScreen({navigation, route}){
             //await AsyncStorage.removeItem('userCartItems');
 
             const userCartItems = await AsyncStorage.getItem('userCartItems');
+            console.log('itemDetails= get userCartItems:', userCartItems)
             if(userCartItems !== null && userCartItems !== ''){
-                //console.log('async existing items in cart: ',listArr);
                 const listArr = userCartItems.split(';').filter((item) => item != "");
+                console.log('async existing items in cart: ',listArr);
                 const idsArr = [];
                 for(i=0;i<listArr.length;i++){
+                    console.log('listArr loop')
                     let cartItemID = listArr[i].split('|x|')[0];
-                    let cartItemQuantity = listArr[i].split('|x|')[1];
+                    let cartItemQuantity = Number(listArr[i].split('|x|')[1]);
+                    console.log('cartItemID:',cartItemID,'vs idsArr:',idsArr,'vs item.id:',item.id);
                     //checking for duplicate item ids.
-                    if(!idsArr.includes(cartItemID)){
+                    if(cartItemID != item.id){//!idsArr.includes(item.id) && !idsArr.includes(cartItemID)){
                         //add if not dup
                         idsArr.push(cartItemID);
-                        cartList.concat(`${cartItemID}|x|${cartItemQuantity};`);
+                        console.log('id array:',idsArr)
+                        cartList += `${cartItemID}|x|${cartItemQuantity};`;
+                        console.log('cartList in loop if not matched:',cartList)
                     }else{
                         //dup item id was found
-                        console.log(cartItemID,'already exists in item list.');
-                        //TODO: handle repeating items.
+                        let newQuantity = (Number(cartItemQuantity)+quantity);
+                        console.log(cartItemID,'already exists in item list; adding',quantity,'to',cartItemQuantity,'=',newQuantity);
+                        cartList += `${cartItemID}|x|${newQuantity};`;
                     }
                     //console.log(`item#${i+1}:`,cartItemDetails, 'x', cartItemQuantity);
                 }
@@ -48,6 +54,7 @@ export default function ItemScreen({navigation, route}){
                 console.log(`Adding: ${newItem}`)
                 await AsyncStorage.setItem('userCartItems',newItem)
             }
+            navigation.navigate('Cart',{item,quantity})
         } catch (error) {
             //Error retrieving cart items
             console.log('error retrieving existing cart items to Add: ', error);
@@ -96,8 +103,7 @@ export default function ItemScreen({navigation, route}){
                     <View style={styles.buttonRow}>
                         <Pressable onPress={ () => {
                                 console.log(`Adding ${quantity} ${item.name} to Cart`),
-                                addItemToCart(),
-                                navigation.navigate('Cart',{item,quantity})
+                                addItemToCart()
                                 }
                             }
                             style={styles.mainButton}

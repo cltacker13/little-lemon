@@ -26,7 +26,7 @@ const formatPrice = (price) => {
 export default function CartScreen({navigation, route}){
     console.log('Cart Screen');
     const item = route.params.item;
-    const itemQuantity = route.params.quantity;
+    const itemQuantity = Number(route.params.quantity);
     const [quantity, updateQuantity] = useState(itemQuantity);
     const [itemSubtotal, updateItemSubtotal] = useState(item.price*quantity);
     const [tax, updateTax] = useState(itemSubtotal*(0.0625));
@@ -51,22 +51,24 @@ export default function CartScreen({navigation, route}){
     const retrieveCartItems = async () => {
         console.log('retrieving cart items...');
         //console.log(item.id,` x${quantity};`);
-        let cartList = [[item,quantity]];
+        //let cartList = [[item,quantity]];
+        let cartList = [{item: item, quantity: quantity}]
         try {
             const userCartItems = await AsyncStorage.getItem('userCartItems');
-            console.log('userCartItems:',userCartItems);
+            console.log('getting for cart userCartItems:',userCartItems);
             //for existing items?
             if(userCartItems !== null && userCartItems !== ''){
                 //console.log('async existing items in cart: ',listArr);
                 const listArr = userCartItems.split(';').filter((item) => item != "");
                 for(i=0;i<listArr.length;i++){
                     let cartItemID = listArr[i].split('|x|')[0];
-                    let cartItemQuantity = listArr[i].split('|x|')[1];
+                    let cartItemQuantity = Number(listArr[i].split('|x|')[1]);
                     let cartItemDetails = await getMenuItemByID(cartItemID);
                     //console.log(`item#${i+1}:`,cartItemDetails, 'x', cartItemQuantity);
-                    cartList.push([cartItemDetails,cartItemQuantity]);
+                    //cartList.push([cartItemDetails,cartItemQuantity]);
+                    cartList.push({item: cartItemDetails, quantity: cartItemQuantity})
                 }
-            console.log('cartList:',cartList);
+            console.log('cart cartList:',cartList);
             return cartList;
             }else{
                 console.log('New cartList:',cartList)
@@ -102,17 +104,18 @@ export default function CartScreen({navigation, route}){
                 <Text style={styles.h1}>ORDER FOR DELIVERY!</Text>
                 <Text style={styles.h2}>Items in Cart</Text>
                     <View style={styles.itemRow}>
-                        <Item name={item.name} price={item.price} image={item.image} quantity={quantity}/>
                         <FlatList //SectionList
-                            //style={styles.itemRow}
-                            data={cartArr} //can't be an array -- should be an object?
+                            style={styles.itemRow}
+                            data={cartArr} //better as array of objects?
                             //sections={data}
-                            //keyExtractor={(item,index) => item+index} //{(item) => item.id}
+                            keyExtractor={(item,index) => item+index} //{(item) => item.id}
                             renderItem={({ item }) => (
-                                <Item 
-                                name={item[0].name} price={item[0].price} 
-                                image={item[0].image}
+                                <Item //item.item.name is where value is located, but can't read on first load?
+                                name={item.name} price={item.price} 
+                                image={item.image}
                                 />
+                                /*<Item name={item.name} price={item.price} 
+                                image={item.image} quantity={quantity}/>*/
                                 )}
                             //ListHeaderComponent={ItemSepatator}
                             ItemSeparatorComponent={ItemSepatator}
@@ -204,8 +207,8 @@ const styles = StyleSheet.create({
     },
     itemRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
+        //justifyContent: 'space-between',
+        //alignItems: 'flex-start',
         paddingTop: 10,
         height: 120,
     },
