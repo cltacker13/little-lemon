@@ -27,29 +27,39 @@ export default function ItemScreen({navigation, route}){
                 const listArr = userCartItems.split(';').filter((item) => item != "");
                 console.log('async existing items in cart: ',listArr);
                 const idsArr = [];
+                let newItemAdded = false;
+                //loop existing items & update quantity if matched.
                 for(i=0;i<listArr.length;i++){
                     console.log('listArr loop')
                     let cartItemID = listArr[i].split('|x|')[0];
                     let cartItemQuantity = Number(listArr[i].split('|x|')[1]);
                     console.log('cartItemID:',cartItemID,'vs idsArr:',idsArr,'vs item.id:',item.id);
-                    //checking for duplicate item ids.
-                    if(cartItemID != item.id){//!idsArr.includes(item.id) && !idsArr.includes(cartItemID)){
-                        //add if not dup
+                    //checking for duplicate item ids in existing list.
+                    if(cartItemID != item.id){
+                        //not matching new tem id, add to list.
                         idsArr.push(cartItemID);
                         console.log('id array:',idsArr)
                         cartList += `${cartItemID}|x|${cartItemQuantity};`;
-                        console.log('cartList in loop if not matched:',cartList)
-                    }else{
-                        //dup item id was found
+                        console.log('cartList in loop id not matched:',cartList)
+                    }else if(cartItemID == item.id){
+                        //if new item id matches existing cart item id, update quantity & add to list
                         let newQuantity = (Number(cartItemQuantity)+quantity);
                         console.log(cartItemID,'already exists in item list; adding',quantity,'to',cartItemQuantity,'=',newQuantity);
                         cartList += `${cartItemID}|x|${newQuantity};`;
+                        newItemAdded = true;
                     }
-                    //console.log(`item#${i+1}:`,cartItemDetails, 'x', cartItemQuantity);
+                }
+                //now add new item to existing list, if not already as an update.
+                if(!newItemAdded){
+                    idsArr.push(item.id);
+                    console.log('id array:',idsArr)
+                    cartList += `${item.id}|x|${quantity};`;
+                    newItemAdded = true;
                 }
                 console.log('final cartList:',cartList);
                 await AsyncStorage.setItem('userCartItems',`${cartList}`)
             }else{
+                //if existing cart list is empty/does not exist, then add new
                 let newItem = `${item.id}|x|${quantity}`;
                 console.log(`Adding: ${newItem}`)
                 await AsyncStorage.setItem('userCartItems',newItem)

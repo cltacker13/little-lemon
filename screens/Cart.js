@@ -3,6 +3,7 @@ import { BackHeader } from "./components/Header";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getMenuItemByID } from "../utils/database";
+import { useUpdateEffect } from "../utils/utils";
 
 const ItemSepatator = () => (
     <View style={styles.itemSepatator}></View>
@@ -15,6 +16,7 @@ const Item = ({ /*category, id,*/ name, price, /*description,*/ image }) => (
             <Text style={styles.title}>{name}</Text>
             <Text style={styles.itemPrice}>${price}</Text>
         </View>
+        
     </View>
 );
 
@@ -27,53 +29,109 @@ export default function CartScreen({navigation, route}){
     console.log('Cart Screen');
     const item = route.params.item;
     const itemQuantity = Number(route.params.quantity);
-    const [quantity, updateQuantity] = useState(itemQuantity);
-    const [itemSubtotal, updateItemSubtotal] = useState(item.price*quantity);
+    const [quantityArr, updateQuantityArr] = useState([itemQuantity]);
+    const [itemSubtotal, updateItemSubtotal] = useState(item.price*itemQuantity);
+    const [itemSubtotalArr, updateItemSubtotalArr] = useState([itemSubtotal]);
     const [tax, updateTax] = useState(itemSubtotal*(0.0625));
     const deliveryFee = (1.99);
     const [orderTotal, updateOrderTotal] = useState(itemSubtotal+tax+deliveryFee);
     //console.log(item);
-    const [cartArr, updateCartArr] = useState([item,quantity]);
+    const [cartArr, updateCartArr] = useState([{item,itemQuantity}]);
 
-    if(quantity<1){
+    if(itemQuantity<1){
         updateQuantity(1);
     };
 
-    const updatePricing = (num) => {
-        let newSub = (item.price*num);
+    const updatePricing = (subSum) => {
+        let newSub = (subSum);
         let newTax = (newSub*(0.0625));
         let newTotal = (newSub+newTax+deliveryFee);
         updateItemSubtotal(newSub);
         updateTax(newTax);
         updateOrderTotal(newTotal);
     }
+    const updateItemQuantity = async (index,quantity,operator) => {
+        let updatedCart = '';
+        let newQuantity = Number(quantity);
+
+        if(operator == '-'){
+            console.log(quantity,'- 1');
+            newQuantity = (quantity - 1); 
+        }else if(operator == '+'){
+            console.log(quantity,'+ 1');
+            newQuantity = (quantity + 1);
+        }
+        if(newQuantity<1){
+            console.log('New quantity is less than 1');
+            newQuantity = 0;
+        }
+        console.log(cartArr[index],newQuantity);
+        for(i=0;i<cartArr.length;i++){
+            if(i == index){
+                if(newQuantity == 0){
+                    console.log('skipping 0 quantity item from updated cart list');
+                }
+                updatedCart += `${cartArr[i].item.id}|x|${newQuantity};`;
+            }else{
+                updatedCart += `${cartArr[i].item.id}|x|${cartArr[i].quantity};`;
+            }
+        }
+        try {
+            console.log('updated Cart:',updatedCart)
+            await AsyncStorage.setItem('userCartItems',`${updatedCart}`);
+        } catch (error) {
+            console.log('error updating CartItems:',error)
+        }
+        let cartList = await retrieveCartItems();
+        updateCartArr(cartList);
+    }
 
     const retrieveCartItems = async () => {
         console.log('retrieving cart items...');
-        //console.log(item.id,` x${quantity};`);
-        //let cartList = [[item,quantity]];
-        let cartList = [{item: item, quantity: quantity}]
+        //console.log(item.id,` x${itemQuantity};`);
+        //let cartList = [[item,itemQuantity]];
+        let cartList = [];
+        let quantities = [];
+        let prices = [];
+        let itemTotals = [];
         try {
             const userCartItems = await AsyncStorage.getItem('userCartItems');
             console.log('getting for cart userCartItems:',userCartItems);
             //for existing items?
             if(userCartItems !== null && userCartItems !== ''){
-                //console.log('async existing items in cart: ',listArr);
                 const listArr = userCartItems.split(';').filter((item) => item != "");
+                //console.log('async existing items in cart: ',listArr);
+
                 for(i=0;i<listArr.length;i++){
                     let cartItemID = listArr[i].split('|x|')[0];
                     let cartItemQuantity = Number(listArr[i].split('|x|')[1]);
                     let cartItemDetails = await getMenuItemByID(cartItemID);
                     //console.log(`item#${i+1}:`,cartItemDetails, 'x', cartItemQuantity);
                     //cartList.push([cartItemDetails,cartItemQuantity]);
-                    cartList.push({item: cartItemDetails, quantity: cartItemQuantity})
+                    if(cartItemQuantity != 0){
+                        cartList.push({item: cartItemDetails, quantity: cartItemQuantity})
+                        quantities.push(cartItemQuantity);
+                        prices.push(Number(cartItemDetails.price));
+                        itemTotals.push(Number(cartItemDetails.price)*cartItemQuantity)
+                    }
                 }
-            console.log('cart cartList:',cartList);
-            return cartList;
+                if(cartList.length == 0){
+                    Alert.alert('Empty Cart','Oops, Your cart is empty.')
+                }
+                console.log('Existing cartList:',cartList);
             }else{
+                cartList.push({item: item, quantity: itemQuantity});
                 console.log('New cartList:',cartList)
                 //Alert.alert('Oops','Your cart appears to be empty.');
+                
             }
+            updateQuantityArr(quantities);
+            //update prices too?
+            updateItemSubtotalArr(itemTotals);
+            updatePricing(itemTotals)
+            console.log(quantities,'x',prices,'=',itemTotals);
+            return cartList;
+
         } catch (error) {
             //Error retrieving cart items
             console.log('error retrieving cart items for Cart: ', error);
@@ -96,6 +154,16 @@ export default function CartScreen({navigation, route}){
         })();
       }, []);
 
+    /*useUpdateEffect(() => { //does nothing yet.
+        (async () => {
+            try {  
+                
+            } catch (err) {
+                // Handle error 
+                Alert.alert(err.message); 
+            } 
+        })();
+    }, []);*/
     
     return (
         <View style={styles.container}>
@@ -103,49 +171,50 @@ export default function CartScreen({navigation, route}){
             <View style={styles.main}>
                 <Text style={styles.h1}>ORDER FOR DELIVERY!</Text>
                 <Text style={styles.h2}>Items in Cart</Text>
-                    <View style={styles.itemRow}>
+                    <View style={styles.itemList}>
                         <FlatList //SectionList
                             style={styles.itemRow}
-                            data={cartArr} //better as array of objects?
-                            //sections={data}
-                            keyExtractor={(item,index) => item+index} //{(item) => item.id}
-                            renderItem={({ item }) => (
-                                <Item //item.item.name is where value is located, but can't read on first load?
-                                name={item.name} price={item.price} 
-                                image={item.image}
-                                />
+                            data={cartArr} //better as array of objects
+                            keyExtractor={(item,index) => item+index} 
+                            renderItem={( {item, index} ) => (
+                                <View style={styles.itemCard}>
+                                    <Item 
+                                        name={item.item.name} price={item.item.price} 
+                                        image={item.item.image} 
+                                    />
+                                    <View style={styles.buttonRow}>
+                                        <Pressable onPress={ () => {
+                                                console.log('Minus at',index),
+                                                updateItemQuantity(index,item.quantity,'-')
+                                                //updatePricing(item.quantity-1)
+                                                }
+                                            }
+                                            style={styles.quantityButton}
+                                        >
+                                            <Text style={styles.quantityButtonText}>-</Text>
+                                        </Pressable>
+                                        <Text style={styles.quantityButtonText}>{item.quantity}</Text>
+                                        <Pressable onPress={ () => {
+                                                console.log('Plus at',index),
+                                                updateItemQuantity(index,item.quantity,'+')
+                                                //updatePricing(item.quantity+1)
+                                                }
+                                            }
+                                            style={styles.quantityButton}
+                                        >
+                                            <Text style={styles.quantityButtonText}>+</Text>
+                                        </Pressable>
+                                    </View>
+                                </View>
                                 /*<Item name={item.name} price={item.price} 
                                 image={item.image} quantity={quantity}/>*/
                                 )}
                             //ListHeaderComponent={ItemSepatator}
                             ItemSeparatorComponent={ItemSepatator}
+                            ListFooterComponent={ItemSepatator}
                         />
                         
-                        <View style={styles.buttonRow}>
-                            <Pressable onPress={ () => {
-                                    //console.log('Minus'),
-                                    updateQuantity(quantity-1),
-                                    updatePricing(quantity-1)
-                                    }
-                                }
-                                style={styles.quantityButton}
-                            >
-                                <Text style={styles.quantityButtonText}>-</Text>
-                            </Pressable>
-                            <Text style={styles.quantityButtonText}>{quantity}</Text>
-                            <Pressable onPress={ () => {
-                                    //console.log('Plus'),
-                                    updateQuantity(quantity+1),
-                                    updatePricing(quantity+1)
-                                    }
-                                }
-                                style={styles.quantityButton}
-                            >
-                                <Text style={styles.quantityButtonText}>+</Text>
-                            </Pressable>
-                        </View>
                     </View>
-                    <ItemSepatator />
             
                 <Pressable onPress={ () => {
                         //console.log('Add more items'),
@@ -205,6 +274,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         paddingBottom: 10,
     },
+    itemList: {
+        flexDirection: 'column',
+        height: 325,
+    },
     itemRow: {
         flexDirection: 'row',
         //justifyContent: 'space-between',
@@ -224,7 +297,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
-        width: 200, //may not be right place/way to set this
+        width: 120, //may not be right place/way to set this
         paddingHorizontal: 10,
         //paddingRight: 2,
     },
