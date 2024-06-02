@@ -6,6 +6,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const backIcon = 'https://github.com/cltacker13/little-lemon/blob/master/assets/whitebackarrow.png?raw=true';
 const logoImage = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-images/Logo.png?raw=true';
 const tillyImage = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-images/Profile.png?raw=true';
+const bagCartIcon = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-images/Delivery%20van.png?raw=true';
+//'https://github.com/cltacker13/little-lemon/blob/master/assets/blackbag-carticon.png?raw=true';
 
 export function MainHeader({navigation}){
     //const { updateIsLoggedIn } = route.params;
@@ -56,8 +58,8 @@ export function MainHeader({navigation}){
                     ) :
                     ( <Text style={styles.profileIconText}>{profileInitials}</Text>
                     )}
-                
             </Pressable>
+            <CartIcon navigation={navigation}/>
         </View>
     )
 }
@@ -112,6 +114,7 @@ export function BackHeader({navigation}){
                     ( <Text style={styles.profileIconText}>{profileInitials}</Text>
                     )}
             </Pressable>
+            <CartIcon navigation={navigation}/>
         </View>
     )
 }
@@ -152,6 +155,52 @@ export function WelcomeBackHeader({navigation}){
     )
 }
 
+export function CartIcon({navigation}){
+    const [cartCount, updateCartCount] = useState(0);
+    const retrieveUserCartData = async () => {
+        //console.log('retrieving header Cart data');
+        try {
+            const userCartItems = await AsyncStorage.getItem('userCartItems');
+            console.log('header CartItems:',userCartItems);
+            if(userCartItems !== null && userCartItems !== ''){
+                const listArr = userCartItems.split(';').filter((item) => item != "");
+                console.log('header CartItems Arr:',listArr);
+                let itemCount = 0;//listArr.length;
+                for(i=0;i<listArr.length;i++){
+                    let cartItemQuantity = Number(listArr[i].split('|x|')[1]);
+                    itemCount = (itemCount+cartItemQuantity);
+                }
+                console.log('itemCount:',itemCount);
+                updateCartCount(itemCount)
+            }else{
+                updateCartCount(0);
+            }
+        } catch (error) {
+            console.log('retrieving header Cart data:', error)
+        }
+    }
+    retrieveUserCartData();
+
+    return(
+        <View>
+            {(cartCount > 0) ? (
+            <Pressable onPress={ () => {
+                    navigation.navigate('Cart')}
+                }
+                style={styles.cartView}
+            >
+                <Image source={{uri: bagCartIcon}}
+                    style={styles.cartIcon}/> 
+                <View style={styles.cartBubble}>
+                    <Text style={styles.cartBubbleText}>{cartCount}</Text>
+                </View>
+            </Pressable>
+            ) : (<View></View>)
+            }  
+        </View>
+    )
+}
+
 
 const styles = StyleSheet.create({
     container: {
@@ -166,8 +215,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignContent: 'center',
         flexDirection: 'row',
-        marginTop: 25,
-        marginBottom: 25,
+        marginTop: 10,
+        marginBottom: 15,//25,
     },
     navButton: {
         alignSelf: 'flex-start',
@@ -175,7 +224,7 @@ const styles = StyleSheet.create({
         height: 50,
     },
     navIcon:{
-        width: 50,
+        width: 49,
         height: 45,
         marginTop: 5,
         //borderRadius: 26,
@@ -186,7 +235,7 @@ const styles = StyleSheet.create({
     },
     menuInnerSymbol: {
         height: 28,
-        width: 50,
+        width: 49,
         borderTopWidth: 10,
         borderBottomWidth: 10,
         borderTopColor: 'white',
@@ -261,4 +310,33 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
     },
+    cartView:{
+        alignItems: 'flex-end',
+        flexDirection: 'row',
+        alignContent: 'flex-end',
+        marginLeft: 10,//265,
+        marginTop: 15,
+        //marginBottom: 2,
+        
+    },
+    cartIcon: {
+        width: 30,
+        height: 40,
+        resizeMode: 'contain',
+        borderRadius: 26,
+    },
+    cartBubble: {
+        width: 24,
+        height: 24,
+        borderRadius: 26,
+        alignSelf: 'flex-end',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#495E57',
+    },
+    cartBubbleText: {
+        fontSize: 14,
+        color: 'white',
+        fontWeight: 'bold',
+    }
 })

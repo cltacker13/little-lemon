@@ -1,5 +1,5 @@
 import { View, Pressable, Image, Text, StyleSheet } from "react-native"
-import { BackHeader } from "./components/Header";
+import { BackHeader, CartIcon } from "./components/Header";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 

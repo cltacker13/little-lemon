@@ -24,7 +24,7 @@ import {
 } from '../utils/database';
 import Filters from '../utils/filters';
 import { getSectionListData, useUpdateEffect } from '../utils/utils';
-import { MainHeader } from './components/Header';
+import { MainHeader, CartIcon } from './components/Header';
 
 const API_URL = 
 'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json';
@@ -184,7 +184,7 @@ export default function HomeScreen({navigation}){
                       elevation={0}
                   />
                 </View>  
-                <View style={{ paddingVertical: 5 }}>  
+                <View style={styles.filterSection}>  
                   <Text style={styles.h2}>ORDER FOR DELIVERY!</Text>
                   <Filters
                     selections={filterSelections}
@@ -337,8 +337,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         paddingBottom: 10,
     },
+    filterSection: {
+      paddingVertical: 5,
+    },
     menuList: {
-        maxHeight: 275,//or something else to define max screen view
+        maxHeight: 285,//or something else to define max screen view
     },
     sectionList: {
       //paddingHorizontal: 16,

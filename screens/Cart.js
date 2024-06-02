@@ -27,8 +27,9 @@ const formatPrice = (price) => {
 
 export default function CartScreen({navigation, route}){
     console.log('Cart Screen');
-    const item = route.params.item;
-    const itemQuantity = Number(route.params.quantity);
+    const item = route.params.item ? (route.params.item) : [
+        {"category": "", "description": "", "id": 0, "image": "", "name": "", "price": "0.00"}];
+    const itemQuantity = route.params.quantity ? (Number(route.params.quantity)) : 0;
     const [quantityArr, updateQuantityArr] = useState([itemQuantity]);
     const [itemSubtotal, updateItemSubtotal] = useState(item.price*itemQuantity);
     const [itemSubtotalArr, updateItemSubtotalArr] = useState([itemSubtotal]);
@@ -38,10 +39,7 @@ export default function CartScreen({navigation, route}){
     //console.log(item);
     const [cartArr, updateCartArr] = useState([{item,itemQuantity}]);
 
-    if(itemQuantity<1){
-        updateQuantity(1);
-    };
-
+    //updates pricing after quantity adjusted.
     const updatePricing = (subSum) => {
         let newSub = (subSum);
         let newTax = (newSub*(0.0625));
@@ -87,6 +85,9 @@ export default function CartScreen({navigation, route}){
     }
 
     const retrieveCartItems = async () => {
+        //remove items in cart, for testing
+        //await AsyncStorage.removeItem('userCartItems');
+
         console.log('retrieving cart items...');
         //console.log(item.id,` x${itemQuantity};`);
         //let cartList = [[item,itemQuantity]];
@@ -128,7 +129,8 @@ export default function CartScreen({navigation, route}){
             updateQuantityArr(quantities);
             //update prices too?
             updateItemSubtotalArr(itemTotals);
-            updatePricing(itemTotals)
+            let sumItemTotals = itemTotals.reduce((partialSum, a) => partialSum + a, 0);
+            updatePricing(sumItemTotals);
             console.log(quantities,'x',prices,'=',itemTotals);
             return cartList;
 
@@ -169,8 +171,12 @@ export default function CartScreen({navigation, route}){
         <View style={styles.container}>
             <BackHeader navigation={navigation}/>
             <View style={styles.main}>
-                <Text style={styles.h1}>ORDER FOR DELIVERY!</Text>
-                <Text style={styles.h2}>Items in Cart</Text>
+                <View style={{marginTop: 15, marginBottom: 15}}>
+                    <Text style={styles.h1}>ORDER FOR DELIVERY!</Text>
+                </View>
+                <View style={{alignSelf: 'flex-start'}}>
+                    <Text style={styles.h2}>Items in Cart</Text>
+                </View>
                     <View style={styles.itemList}>
                         <FlatList //SectionList
                             style={styles.itemRow}
@@ -235,7 +241,8 @@ export default function CartScreen({navigation, route}){
                 </View>
                 <View style={styles.buttonRow}>
                     <Pressable onPress={ () => {
-                            console.log(`${orderTotal} Order total: ${formatPrice(orderTotal)}`)
+                            console.log(`${orderTotal} Order total: ${formatPrice(orderTotal)}`),
+                            navigation.navigate('Checkout', {itemSubtotal,tax,deliveryFee,orderTotal})
                             }
                         }
                         style={styles.mainButton}

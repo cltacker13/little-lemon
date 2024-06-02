@@ -16,6 +16,7 @@ import HomeScreen from './screens/Home';
 import ProfileScreen from './screens/Profile';
 import ItemScreen from './screens/ItemDetails';
 import CartScreen from './screens/Cart';
+import CheckOutScreen from './screens/CheckOut.js';
 
 const Stack = createNativeStackNavigator();
 
@@ -116,6 +117,7 @@ export default function App() {
                 <Stack.Screen name="Profile" component={ProfileScreen} initialParams={{ updateIsLoggedIn }}/>
                 <Stack.Screen name="ItemDetails" component={ItemScreen} initialParams={{ updateIsLoggedIn }}/>
                 <Stack.Screen name="Cart" component={CartScreen} initialParams={{ updateIsLoggedIn }}/>
+                <Stack.Screen name='Checkout' component={CheckOutScreen} initialParams={{ updateIsLoggedIn }}/>
               </>
             ) : (
               <>
