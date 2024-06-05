@@ -79,33 +79,10 @@ export default function App() {
     retrieveData(); 
   },[]);
   
-  //retrieveData();  
-/*
-  //if app is still loading from AsyncStorage
-  if(isLoading) { 
-    //storeData();
-    //retrieveData();
-    console.log('isLoading:',isLoading);
-    return <SplashScreen/>;
-  };
-  //TODO: create logged in check/update -- runs too many calls.
-  if(isLoggedIn){
-    //retrieveData();
-    console.log('isLoggedIn:',isLoggedIn);
-  }*/
 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }} >
-        {/* //entire screen stack initialRouteName="Home"
-        <>
-          <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen name="LogIn" component={LogInScreen} />
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
-        </>
-        */}
         {/*check for loggedin status*/
         //cannot manually nav btwn groups, automatically navs based on criteria.
           isLoading ? (

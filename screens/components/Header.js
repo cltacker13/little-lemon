@@ -207,8 +207,6 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 24,
         backgroundColor: '#fff',
-        //alignItems: 'center',
-        //justifyContent: 'center',
     },
     header: {
         justifyContent: 'space-evenly',
@@ -227,7 +225,6 @@ const styles = StyleSheet.create({
         width: 49,
         height: 45,
         marginTop: 5,
-        //borderRadius: 26,
         alignSelf: 'flex-start',
         alignItems: 'center',
         justifyContent: 'center',

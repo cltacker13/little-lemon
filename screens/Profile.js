@@ -186,9 +186,6 @@ export default function ProfileScreen({navigation, route}){
                                 <Text style={styles.profileInitials}>{initials}</Text>
                             </View> 
                             )
-                         //((!image || !avatarImage) && <View style={styles.avatarIcon}><Text style={styles.profileInitials}>{initials}</Text></View>) ||
-                         //((image && !avatarImage) && <Image source={{uri: image}} style={styles.avatarIcon} />) || 
-                         //(avatarImage && <Image source={{uri: avatarImage}} style={styles.avatarIcon} />)
                         }
                         <Pressable onPress={ () => {
                                 pickImage(),
@@ -290,7 +287,7 @@ export default function ProfileScreen({navigation, route}){
                                 clearFormChanges()
                                 }
                             }
-                            style={[styles.cancelButton]}//, !isFormValid && styles.buttonDisabled]}
+                            style={[styles.cancelButton]}
                             >
                             <Text style={styles.cancelButtonText}>Discard Changes</Text>
                         </Pressable>
@@ -309,7 +306,6 @@ export default function ProfileScreen({navigation, route}){
                             //clearData()
                             storeOfflineStatus(),
                             updateIsLoggedIn(false)
-                            //navigation.navigate('Onboarding')
                             }
                         }
                         style={styles.mainButton}
