@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 //import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFonts } from 'expo-font';
 
 import SplashScreen from './screens/Splash';
 import OnboardingScreen from './screens/Onboarding';
@@ -27,6 +28,10 @@ export default function App() {
   console.log('App:');
   const [isLoading, updateIsLoading] = useState(true);  
   const [isLoggedIn, updateIsLoggedIn] = useState(false);
+  const [fontsLoaded, fontError] = useFonts({
+    'Karla': 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-fonts/quTiL5KcTtip0D2koa-z_Q_4151acd234364ee5828020d37a86f6e1_LittleLemon_fonts/PG_LittleLemon_fonts/Fonts/Karla-Regular.ttf',
+    'Markazi': 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-fonts/quTiL5KcTtip0D2koa-z_Q_4151acd234364ee5828020d37a86f6e1_LittleLemon_fonts/PG_LittleLemon_fonts/Fonts/MarkaziText-Regular.ttf?raw=true',
+  });
 
 
   const storeData = async () => {
@@ -117,5 +122,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    fontFamily: 'Karla',
   },
 });

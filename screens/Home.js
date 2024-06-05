@@ -25,6 +25,10 @@ import Filters from '../utils/filters';
 import { getSectionListData, useUpdateEffect } from '../utils/utils';
 import { MainHeader, CartIcon } from './components/Header';
 
+import { useFonts } from 'expo-font';
+//const karlaFont = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-fonts/quTiL5KcTtip0D2koa-z_Q_4151acd234364ee5828020d37a86f6e1_LittleLemon_fonts/PG_LittleLemon_fonts/Fonts/Karla-Regular.ttf?raw=true';
+
+
 const API_URL = 
 'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json';
 const sections = ['starters', 'mains', 'desserts'];
@@ -48,7 +52,11 @@ const heroImage = 'https://github.com/cltacker13/little-lemon/blob/master/assets
 export default function HomeScreen({navigation}){
     console.log('Home Screen');
     //const { updateIsLoggedIn } = route.params;
-
+    const [fontsLoaded, fontError] = useFonts({
+      'Karla': 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-fonts/quTiL5KcTtip0D2koa-z_Q_4151acd234364ee5828020d37a86f6e1_LittleLemon_fonts/PG_LittleLemon_fonts/Fonts/Karla-Regular.ttf?raw=true',
+      'Markazi': 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-fonts/quTiL5KcTtip0D2koa-z_Q_4151acd234364ee5828020d37a86f6e1_LittleLemon_fonts/PG_LittleLemon_fonts/Fonts/MarkaziText-Regular.ttf?raw=true',
+    });
+  
     const [data, setData] = useState([]);
     const [searchBarText, setSearchBarText] = useState('');
     const [query, setQuery] = useState('');
@@ -225,7 +233,8 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 24,
         backgroundColor: '#fff',
-    },
+        fontFamily: 'Karla',
+      },
     header: {
         justifyContent: 'space-evenly',
         alignItems: 'center',
@@ -285,16 +294,18 @@ const styles = StyleSheet.create({
       //justifyContent: 'flex-start',
     },
     heroH1: {
-      fontSize: 56,
+      fontFamily: 'Markazi',
+      fontSize: 64,
       color: '#F4CE14',
       marginLeft: 20,
     },
     heroH2: {
-      fontSize: 34,
+      fontFamily: 'Markazi',
+      fontSize: 40,
       color: 'white',
       //marginLeft: 20,
       marginBottom: 5,
-      textAlignVertical: 'top',
+      //textAlignVertical: 'top',
     },
     heroDesc: {
       //marginLeft: 20,
