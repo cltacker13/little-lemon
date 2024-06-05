@@ -296,12 +296,15 @@ const styles = StyleSheet.create({
     heroH1: {
       fontFamily: 'Markazi',
       fontSize: 64,
+      lineHeight: 58,
       color: '#F4CE14',
       marginLeft: 20,
+      marginTop: 20,
     },
     heroH2: {
       fontFamily: 'Markazi',
       fontSize: 40,
+      lineHeight: 36,
       color: 'white',
       //marginLeft: 20,
       marginBottom: 5,
