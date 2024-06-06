@@ -1,13 +1,11 @@
 import { View, Text, Pressable, Image, StyleSheet } from "react-native";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-//import logo from '../../assets/ll-images/Logo.png';
 
 const backIcon = 'https://github.com/cltacker13/little-lemon/blob/master/assets/whitebackarrow.png?raw=true';
 const logoImage = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-images/Logo.png?raw=true';
 const tillyImage = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-images/Profile.png?raw=true';
 const bagCartIcon = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-images/Delivery%20van.png?raw=true';
-//'https://github.com/cltacker13/little-lemon/blob/master/assets/blackbag-carticon.png?raw=true';
 
 export function MainHeader({navigation}){
     //const { updateIsLoggedIn } = route.params;
@@ -161,16 +159,16 @@ export function CartIcon({navigation}){
         //console.log('retrieving header Cart data');
         try {
             const userCartItems = await AsyncStorage.getItem('userCartItems');
-            console.log('header CartItems:',userCartItems);
+            //console.log('header CartItems:',userCartItems);
             if(userCartItems !== null && userCartItems !== ''){
                 const listArr = userCartItems.split(';').filter((item) => item != "");
-                console.log('header CartItems Arr:',listArr);
+                //console.log('header CartItems Arr:',listArr);
                 let itemCount = 0;//listArr.length;
                 for(i=0;i<listArr.length;i++){
                     let cartItemQuantity = Number(listArr[i].split('|x|')[1]);
                     itemCount = (itemCount+cartItemQuantity);
                 }
-                console.log('itemCount:',itemCount);
+                //console.log('itemCount:',itemCount);
                 updateCartCount(itemCount)
             }else{
                 updateCartCount(0);

@@ -30,10 +30,10 @@ export async function createTable() {
           'CREATE TABLE IF NOT EXISTS menuitems (id integer primary key not null, name text, price text, category text, description text, image text)',
           [], 
           (_tx, rs) => {
-            console.log("create=" + JSON.stringify(rs));
+            //console.log("create=" + JSON.stringify(rs));
           },
           (_tx, err) => {
-            console.log("create error=" + JSON.stringify(err));
+            //console.log("create error=" + JSON.stringify(err));
           }
         );
       },
@@ -92,10 +92,10 @@ export async function saveMenuItems(menuItems) {
       //'INSERT INTO menuitems (category, description, image, price, name) VALUES ("desserts", "Freshmade vanilla ice cream", "icecream.jpg", "5.00", "Ice Cream")',
       //query + values,[], 
       [],(_tx, rs) => {
-        console.log("insert=" + JSON.stringify(rs));
+        //console.log("insert=" + JSON.stringify(rs));
       },
       (_tx, err) => {
-        console.log("insert error=" + err/*JSON.stringify(err)*/);
+        //console.log("insert error=" + err/*JSON.stringify(err)*/);
       }
     );
   });

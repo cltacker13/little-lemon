@@ -4,8 +4,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import { LogBox } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-//import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
-//import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 
@@ -35,7 +33,7 @@ export default function App() {
 
 
   const storeData = async () => {
-    console.log('saving data...');
+    //console.log('saving data...');
     try {
       await AsyncStorage.setItem(
         'firstOpenComplete', 'true'
@@ -44,7 +42,7 @@ export default function App() {
       retrieveData();
     } catch (error) {
       //saving error
-      console.log('saving error');
+      console.log('saving error:', error);
     }
   };
   const retrieveData = async () => {
@@ -55,7 +53,7 @@ export default function App() {
       const userFirstName = await AsyncStorage.getItem('firstName');
       const userEmail = await AsyncStorage.getItem('userEmail');
       const userPassword = await AsyncStorage.getItem('userPassword');
-      console.log('App retrieved:',firstOpenComplete,userLoggedIn)
+      //console.log('App retrieved:',firstOpenComplete,userLoggedIn)
       if (firstOpenComplete !== null) {
         //console.log('firstOpenedComplete:',firstOpenComplete);
         updateIsLoading(false);
@@ -67,12 +65,12 @@ export default function App() {
             //console.log('retrieve local data on App:',localData)
             //console.log(`user ${userFirstName} is logged in: ${userLoggedIn}`);
           } else {
-            console.log('not a user');
+            //console.log('not a user');
           }
         };
       }else{
         storeData();
-        console.log('new load.')
+        //console.log('new load.')
       }; 
     } catch (error) {
       //retrieving error

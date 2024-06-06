@@ -3,7 +3,6 @@ import { BackHeader } from "./components/Header";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getMenuItemByID } from "../utils/database";
-import { useUpdateEffect } from "../utils/utils";
 
 const ItemSepatator = () => (
     <View style={styles.itemSepatator}></View>
@@ -26,7 +25,7 @@ const formatPrice = (price) => {
 }
 
 export default function CartScreen({navigation, route}){
-    console.log('Cart Screen');
+    //console.log('Cart Screen');
     const item = route.params.item ? (route.params.item) : [
         {"category": "", "description": "", "id": 0, "image": "", "name": "", "price": "0.00"}];
     const itemQuantity = route.params.quantity ? (Number(route.params.quantity)) : 0;
@@ -53,21 +52,21 @@ export default function CartScreen({navigation, route}){
         let newQuantity = Number(quantity);
 
         if(operator == '-'){
-            console.log(quantity,'- 1');
+            //console.log(quantity,'- 1');
             newQuantity = (quantity - 1); 
         }else if(operator == '+'){
-            console.log(quantity,'+ 1');
+            //console.log(quantity,'+ 1');
             newQuantity = (quantity + 1);
         }
         if(newQuantity<1){
-            console.log('New quantity is less than 1');
+            //console.log('New quantity is less than 1');
             newQuantity = 0;
         }
-        console.log(cartArr[index],newQuantity);
+        //console.log(cartArr[index],newQuantity);
         for(i=0;i<cartArr.length;i++){
             if(i == index){
                 if(newQuantity == 0){
-                    console.log('skipping 0 quantity item from updated cart list');
+                    //console.log('skipping 0 quantity item from updated cart list');
                 }
                 updatedCart += `${cartArr[i].item.id}|x|${newQuantity};`;
             }else{
@@ -75,7 +74,7 @@ export default function CartScreen({navigation, route}){
             }
         }
         try {
-            console.log('updated Cart:',updatedCart)
+            //console.log('updated Cart:',updatedCart)
             await AsyncStorage.setItem('userCartItems',`${updatedCart}`);
         } catch (error) {
             console.log('error updating CartItems:',error)
@@ -88,7 +87,7 @@ export default function CartScreen({navigation, route}){
         //remove items in cart, for testing
         //await AsyncStorage.removeItem('userCartItems');
 
-        console.log('retrieving cart items...');
+        //console.log('retrieving cart items...');
         //console.log(item.id,` x${itemQuantity};`);
         //let cartList = [[item,itemQuantity]];
         let cartList = [];
@@ -97,7 +96,7 @@ export default function CartScreen({navigation, route}){
         let itemTotals = [];
         try {
             const userCartItems = await AsyncStorage.getItem('userCartItems');
-            console.log('getting for cart userCartItems:',userCartItems);
+            //console.log('getting for cart userCartItems:',userCartItems);
             //for existing items?
             if(userCartItems !== null && userCartItems !== ''){
                 const listArr = userCartItems.split(';').filter((item) => item != "");
@@ -119,19 +118,18 @@ export default function CartScreen({navigation, route}){
                 if(cartList.length == 0){
                     Alert.alert('Empty Cart','Oops, Your cart is empty.')
                 }
-                console.log('Existing cartList:',cartList);
+                //console.log('Existing cartList:',cartList);
             }else{
                 cartList.push({item: item, quantity: itemQuantity});
-                console.log('New cartList:',cartList)
+                //console.log('New cartList:',cartList)
                 //Alert.alert('Oops','Your cart appears to be empty.');
                 
             }
             updateQuantityArr(quantities);
-            //update prices too?
             updateItemSubtotalArr(itemTotals);
             let sumItemTotals = itemTotals.reduce((partialSum, a) => partialSum + a, 0);
             updatePricing(sumItemTotals);
-            console.log(quantities,'x',prices,'=',itemTotals);
+            //console.log(quantities,'x',prices,'=',itemTotals);
             return cartList;
 
         } catch (error) {
@@ -144,7 +142,7 @@ export default function CartScreen({navigation, route}){
         (async () => {
           try {  
             let cartList = await retrieveCartItems();
-            console.log('useEffect retrieved:',cartList); 
+            //console.log('useEffect retrieved:',cartList); 
             updateCartArr(cartList);
             if(!cartList){
                 console.log('useEffect retrieved nothing');
@@ -156,16 +154,6 @@ export default function CartScreen({navigation, route}){
         })();
       }, []);
 
-    /*useUpdateEffect(() => { //does nothing yet.
-        (async () => {
-            try {  
-                
-            } catch (err) {
-                // Handle error 
-                Alert.alert(err.message); 
-            } 
-        })();
-    }, []);*/
     
     return (
         <View style={styles.container}>
@@ -190,7 +178,7 @@ export default function CartScreen({navigation, route}){
                                     />
                                     <View style={styles.buttonRow}>
                                         <Pressable onPress={ () => {
-                                                console.log('Minus at',index),
+                                                //console.log('Minus at',index),
                                                 updateItemQuantity(index,item.quantity,'-')
                                                 //updatePricing(item.quantity-1)
                                                 }
@@ -201,7 +189,7 @@ export default function CartScreen({navigation, route}){
                                         </Pressable>
                                         <Text style={styles.quantityButtonText}>{item.quantity}</Text>
                                         <Pressable onPress={ () => {
-                                                console.log('Plus at',index),
+                                                //console.log('Plus at',index),
                                                 updateItemQuantity(index,item.quantity,'+')
                                                 //updatePricing(item.quantity+1)
                                                 }
@@ -241,7 +229,7 @@ export default function CartScreen({navigation, route}){
                 </View>
                 <View style={styles.buttonRow}>
                     <Pressable onPress={ () => {
-                            console.log(`${orderTotal} Order total: ${formatPrice(orderTotal)}`),
+                            //console.log(`${orderTotal} Order total: ${formatPrice(orderTotal)}`),
                             navigation.navigate('Checkout', {itemSubtotal,tax,deliveryFee,orderTotal})
                             }
                         }

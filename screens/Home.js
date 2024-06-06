@@ -4,7 +4,6 @@ import {
   View,
   StyleSheet,
   FlatList,
-  SectionList,
   SafeAreaView,
   StatusBar,
   Pressable,
@@ -22,11 +21,10 @@ import {
   dropTable,
 } from '../utils/database';
 import Filters from '../utils/filters';
-import { getSectionListData, useUpdateEffect } from '../utils/utils';
-import { MainHeader, CartIcon } from './components/Header';
+import { useUpdateEffect } from '../utils/utils';
+import { MainHeader } from './components/Header';
 
 import { useFonts } from 'expo-font';
-//const karlaFont = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-fonts/quTiL5KcTtip0D2koa-z_Q_4151acd234364ee5828020d37a86f6e1_LittleLemon_fonts/PG_LittleLemon_fonts/Fonts/Karla-Regular.ttf?raw=true';
 
 
 const API_URL = 
@@ -50,7 +48,7 @@ const Item = ({ category, /*id,*/ name, price, description, image }) => (
 const heroImage = 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-images/Hero%20image.png?raw=true';
 
 export default function HomeScreen({navigation}){
-    console.log('Home Screen');
+    //console.log('Home Screen');
     //const { updateIsLoggedIn } = route.params;
     const [fontsLoaded, fontError] = useFonts({
       'Karla': 'https://github.com/cltacker13/little-lemon/blob/master/assets/ll-fonts/quTiL5KcTtip0D2koa-z_Q_4151acd234364ee5828020d37a86f6e1_LittleLemon_fonts/PG_LittleLemon_fonts/Fonts/Karla-Regular.ttf?raw=true',
@@ -105,8 +103,7 @@ export default function HomeScreen({navigation}){
             //console.log('fetched to createTable:',menuItems);
           } 
           setData(menuItems);
-          /*const sectionListData = getSectionListData(menuItems);
-          setData(sectionListData);*/
+          
         } catch (err) {
           // Handle error 
           Alert.alert(err.message); 
@@ -134,8 +131,6 @@ export default function HomeScreen({navigation}){
             activeCategories
           );
           //console.log('menuitems after filter:',menuItems)
-          /*const sectionListData = getSectionListData(menuItems);
-          setData(sectionListData);*/
           setData(menuItems);
         } catch (err) {
           Alert.alert(err.message);
@@ -197,17 +192,16 @@ export default function HomeScreen({navigation}){
                   />
                 </View>
                 <View style={styles.menuList}>
-                  <FlatList //SectionList
+                  <FlatList 
                     style={styles.sectionList}
                     data={data} 
-                    //sections={data}
-                    keyExtractor={(item,index) => item+index} //{(item) => item.id}
+                    keyExtractor={(item,index) => item+index} 
                     renderItem={({ item }) => (
                       <Pressable onPress={ () => {
                         //console.log({item})
                         navigation.navigate('ItemDetails',{item})
                       }}>
-                        <Item //id={item.id} title={item.title} price={item.price} 
+                        <Item  
                           category={item.title} // id={item.id}
                           name={item.name} price={item.price} 
                           description={item.description} image={item.image}
@@ -216,9 +210,6 @@ export default function HomeScreen({navigation}){
                         )}
                     ListHeaderComponent={ItemSepatator}
                     ItemSeparatorComponent={ItemSepatator}
-                    /*renderSectionHeader={({ section: { title } }) => (
-                    <ItemSepatator/>//<Text style={styles.sectionHeader}>{title}</Text>
-                    )}*/
                   />
                 </View>
 

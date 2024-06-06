@@ -4,7 +4,7 @@ import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ItemScreen({navigation, route}){
-    console.log('Item Details Screen');
+    //console.log('Item Details Screen');
     const item = route.params.item;
     const [quantity, updateQuantity] = useState(1);
     //console.log(item);
@@ -14,7 +14,7 @@ export default function ItemScreen({navigation, route}){
     };
 
     const addItemToCart = async () => {
-        console.log('Adding to cart:',`${item.id}|x|${quantity}`);
+        //console.log('Adding to cart:',`${item.id}|x|${quantity}`);
         
         let cartList = ''; //`${item.id}|x|${quantity}`;
         try {
@@ -22,29 +22,29 @@ export default function ItemScreen({navigation, route}){
             //await AsyncStorage.removeItem('userCartItems');
 
             const userCartItems = await AsyncStorage.getItem('userCartItems');
-            console.log('itemDetails= get userCartItems:', userCartItems)
+            //console.log('itemDetails= get userCartItems:', userCartItems)
             if(userCartItems !== null && userCartItems !== ''){
                 const listArr = userCartItems.split(';').filter((item) => item != "");
-                console.log('async existing items in cart: ',listArr);
+                //console.log('async existing items in cart: ',listArr);
                 const idsArr = [];
                 let newItemAdded = false;
                 //loop existing items & update quantity if matched.
                 for(i=0;i<listArr.length;i++){
-                    console.log('listArr loop')
+                    //console.log('listArr loop')
                     let cartItemID = listArr[i].split('|x|')[0];
                     let cartItemQuantity = Number(listArr[i].split('|x|')[1]);
-                    console.log('cartItemID:',cartItemID,'vs idsArr:',idsArr,'vs item.id:',item.id);
+                    //console.log('cartItemID:',cartItemID,'vs idsArr:',idsArr,'vs item.id:',item.id);
                     //checking for duplicate item ids in existing list.
                     if(cartItemID != item.id){
                         //not matching new tem id, add to list.
                         idsArr.push(cartItemID);
-                        console.log('id array:',idsArr)
+                        //console.log('id array:',idsArr)
                         cartList += `${cartItemID}|x|${cartItemQuantity};`;
-                        console.log('cartList in loop id not matched:',cartList)
+                        //console.log('cartList in loop id not matched:',cartList)
                     }else if(cartItemID == item.id){
                         //if new item id matches existing cart item id, update quantity & add to list
                         let newQuantity = (Number(cartItemQuantity)+quantity);
-                        console.log(cartItemID,'already exists in item list; adding',quantity,'to',cartItemQuantity,'=',newQuantity);
+                        //console.log(cartItemID,'already exists in item list; adding',quantity,'to',cartItemQuantity,'=',newQuantity);
                         cartList += `${cartItemID}|x|${newQuantity};`;
                         newItemAdded = true;
                     }
@@ -52,16 +52,16 @@ export default function ItemScreen({navigation, route}){
                 //now add new item to existing list, if not already as an update.
                 if(!newItemAdded){
                     idsArr.push(item.id);
-                    console.log('id array:',idsArr)
+                    //console.log('id array:',idsArr)
                     cartList += `${item.id}|x|${quantity};`;
                     newItemAdded = true;
                 }
-                console.log('final cartList:',cartList);
+                //console.log('final cartList:',cartList);
                 await AsyncStorage.setItem('userCartItems',`${cartList}`)
             }else{
                 //if existing cart list is empty/does not exist, then add new
                 let newItem = `${item.id}|x|${quantity}`;
-                console.log(`Adding: ${newItem}`)
+                //console.log(`Adding: ${newItem}`)
                 await AsyncStorage.setItem('userCartItems',newItem)
             }
             navigation.navigate('Cart',{item,quantity})
@@ -112,7 +112,7 @@ export default function ItemScreen({navigation, route}){
                     </View>
                     <View style={styles.buttonRow}>
                         <Pressable onPress={ () => {
-                                console.log(`Adding ${quantity} ${item.name} to Cart`),
+                                //console.log(`Adding ${quantity} ${item.name} to Cart`),
                                 addItemToCart()
                                 }
                             }

@@ -14,7 +14,7 @@ const SectionSepatator = () => (
 );
 
 export default function CheckOutScreen({navigation, route}){
-    console.log('Checkout Screen');
+    //console.log('Checkout Screen');
     const itemSubtotal = route.params.itemSubtotal ? (Number(route.params.itemSubtotal)) : 0;
     const tax = route.params.tax ? (Number(route.params.tax)) : 0;
     const deliveryFee = route.params.deliveryFee ? (Number(route.params.deliveryFee)) : 0;
@@ -38,7 +38,7 @@ export default function CheckOutScreen({navigation, route}){
     retrieveUserProfileData();
 
     const removingCartItems = async () => {
-        console.log('removing cart items...');
+        //console.log('removing cart items...');
         try {
             await AsyncStorage.removeItem('userCartItems');
         } catch (error) {
@@ -47,7 +47,7 @@ export default function CheckOutScreen({navigation, route}){
     }
 
     const completeCheckout = async () => {
-        console.log('completing checkout');
+        //console.log('completing checkout');
         if(isValidOrderForm){
             removingCartItems();
             Alert.alert('Order Complete.',`Thank you for placing your order. Payment of ${formatPrice(orderTotal)} has been captured. Your order will be delivered shortly.`);
@@ -108,7 +108,7 @@ export default function CheckOutScreen({navigation, route}){
                 <View style={styles.checkoutSection}>
                     <View style={styles.buttonRow}>
                         <Pressable onPress={ () => {
-                                console.log(`Order Complete. Paid ${formatPrice(orderTotal)}`),
+                                //console.log(`Order Complete. Paid ${formatPrice(orderTotal)}`),
                                 completeCheckout()
                                 }
                             }

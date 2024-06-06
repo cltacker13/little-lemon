@@ -7,7 +7,7 @@ import { validateName, validateEmail, validateUSPhone } from '../utils';
 import { BackHeader } from './components/Header';
 
 export default function ProfileScreen({navigation, route}){
-    console.log('Profile Screen');
+    //console.log('Profile Screen');
 
     const { updateIsLoggedIn } = route.params;
 
@@ -55,7 +55,7 @@ export default function ProfileScreen({navigation, route}){
             //+1(###)###-### 
             if(n.charAt(0) !== '+'){
                 formated = `+1(${n.charAt(0)}${n.charAt(1)}${n.charAt(2)})${n.charAt(3)}${n.charAt(4)}${n.charAt(5)}-${n.charAt(6)}${n.charAt(7)}${n.charAt(8)}${n.charAt(9)}`; 
-                console.log('formated number:',formated);
+                //console.log('formated number:',formated);
                 onChangePhone(formated);
             }
         }else {
@@ -82,7 +82,7 @@ export default function ProfileScreen({navigation, route}){
     //need to store image uri in a retrievable way, does not display on fresh load.
     const storeProfileImage = async (fileURI) => {
         const uri = `${fileURI}`;
-        console.log('storing Image uri...');
+        //console.log('storing Image uri...');
         //console.log(image,'  | Vs |  ',avatarImage);
         try {
             await AsyncStorage.setItem('userProfileImage',uri);
@@ -92,7 +92,7 @@ export default function ProfileScreen({navigation, route}){
         }
     };
     const storeOfflineStatus = async () => {
-        console.log('clearing data...');
+        //console.log('clearing data...');
         try {
             await AsyncStorage.setItem('userLoggedIn','false');
         } catch (error) {
@@ -131,8 +131,8 @@ export default function ProfileScreen({navigation, route}){
         }
     }
     const storeAllUserProfileData = async () => {
-        console.log('storing all profile data');
-        console.log('setting values:', firstName, lastName, email, phone)
+        //console.log('storing all profile data');
+        //console.log('setting values:', firstName, lastName, email, phone)
         if(isFormValid && (firstName != '' || lastName != '' || email != '' || phone != '')){
            //edits made 
            try {
@@ -157,7 +157,7 @@ export default function ProfileScreen({navigation, route}){
     
     function clearFormChanges(){
         //clearing form changes.
-        console.log('clearing form changes.')
+        //console.log('clearing form changes.')
         onChangeFirstName(fname);
         onChangeLastName(lname);
         onChangeEmail(mail);
@@ -188,8 +188,8 @@ export default function ProfileScreen({navigation, route}){
                             )
                         }
                         <Pressable onPress={ () => {
-                                pickImage(),
-                                console.log('update Avatar icon:',image);
+                                pickImage()
+                                //console.log('update Avatar icon:',image);
                                 }
                             }
                             style={styles.updateButton}

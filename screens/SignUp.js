@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { WelcomeBackHeader } from './components/Header';
 
 export default function SignUpScreen({navigation, route}){
-    console.log('SignUp Screen');
+    //console.log('SignUp Screen');
     const { updateIsLoggedIn } = route.params;
 
     const [password, onChangePassword] = useState('');
@@ -17,7 +17,7 @@ export default function SignUpScreen({navigation, route}){
     const isFormValid = (isPasswordValid && isPassConfirmValid && termsAgreement);
     
     const storeData = async () => {
-        console.log('saving sign up data...');
+        //console.log('saving sign up data...');
         if(isFormValid){
             try {
                 await AsyncStorage.multiSet(
@@ -26,13 +26,6 @@ export default function SignUpScreen({navigation, route}){
                 )
                 updateIsLoggedIn(true);
                 //console.log('sign up data saved', password);
-                /*try {
-                    const onlineStatus = await AsyncStorage.getItem('userLoggedIn');
-                    //console.log('online status',onlineStatus);
-                } catch (error) {
-                    console.log('error fetching updated online status:', error);
-                }*/
-                //navigation.navigate('Profile'); 
             } catch (error) {
             //saving error
             console.log('saving error at sign up:', error);

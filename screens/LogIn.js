@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { WelcomeHeader } from './components/Header';
 
 export default function LogInScreen({navigation, route}){
-    console.log('Login Screen');
+    //console.log('Login Screen');
     const { updateIsLoggedIn } = route.params;
     const [email, onChangeEmail] = useState('');
     const [password, onChangePassword] = useState('');
@@ -14,7 +14,7 @@ export default function LogInScreen({navigation, route}){
     const isFormValid = (isEmailValid && isPasswordValid);
 
     const storeOnlineStatus = async () => {
-        console.log('saving online status ...');
+        //console.log('saving online status ...');
         if(isFormValid){
             try {
                 const userEmail = await AsyncStorage.getItem('userEmail');
@@ -25,13 +25,13 @@ export default function LogInScreen({navigation, route}){
                             'userLoggedIn', 'true'
                         )
                         updateIsLoggedIn(true);
-                        console.log('saved firstopen data');
+                        //console.log('saved firstopen data');
                     } catch (error) {
                     //saving error
                         console.log('error saving online status: ', error);  
                     }
                 } else {
-                    console.log('invalid login creds');
+                    //console.log('invalid login creds');
                     Alert.alert('Invalid Email & Password', 'Please try again with valid email and password.')
                 }
             } catch (error) {

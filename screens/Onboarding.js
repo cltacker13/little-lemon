@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { WelcomeHeader } from './components/Header';
 
 export default function OnboardingScreen({navigation}){
-    console.log('Onboarding Screen');
+    //console.log('Onboarding Screen');
     const [firstName, onChangeFirstName] = useState('');
     const [email, onChangeEmail] = useState('');
     const isFirstNameValid = validateName(firstName);
@@ -13,7 +13,7 @@ export default function OnboardingScreen({navigation}){
     const isFormValid = (isFirstNameValid && isEmailValid);
 
     const storeData = async () => {
-        console.log('saving sign up data...');
+        //console.log('saving sign up data...');
         if(isFormValid){
             try {
                 await AsyncStorage.multiSet(
