@@ -75,6 +75,7 @@ export default function ProfileScreen({navigation, route}){
             setAvatarImage(selection.assets[0].uri);
             //save to Async & set to nav profile icon too
             storeProfileImage(selection.assets[0].uri);
+            updateImage(selection.assets[0].uri);
         }else if(selection.canceled){
             console.log('image selection canceled.')
         }
@@ -89,6 +90,17 @@ export default function ProfileScreen({navigation, route}){
         } catch (error) {
             //storing Image error
             console.log('error storing image uri: ', error);
+        }
+    };
+    const clearProfileImage = async () => {
+        //console.log('clearing Image uri...');
+        try {
+            storeProfileImage('');
+            updateImage('');
+            setAvatarImage('');
+        } catch (error) {
+            //clearing Image error
+            console.log('error clearing image uri: ', error);
         }
     };
     const storeOfflineStatus = async () => {
@@ -176,7 +188,7 @@ export default function ProfileScreen({navigation, route}){
                 <View style={styles.avatarSection}>
                     <Text style={styles.inputLabel}>Avatar</Text>
                     <View style={styles.buttonRow}>
-                        { image !== '' ?
+                        { (image != '' && image != null) ?
                             (
                             <Image source={{uri: image}} 
                                 style={styles.avatarIcon} />
@@ -197,7 +209,8 @@ export default function ProfileScreen({navigation, route}){
                             <Text style={styles.updateButtonText}>Change</Text>
                         </Pressable>
                         <Pressable onPress={ () => {
-                                console.log('remove Avatar icon');
+                                clearProfileImage()
+                                //console.log('remove Avatar icon');
                                 }
                             }
                             style={styles.cancelButton}
@@ -358,7 +371,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'green',
+        backgroundColor: '#495E57',//'green',
     },
     main: {
         alignItems: 'flex-start',
@@ -404,7 +417,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         //alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'green',
+        backgroundColor: '#495E57',//'green',
     },
     profileInitials: {
         fontSize: 45,

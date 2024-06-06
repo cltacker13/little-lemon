@@ -20,7 +20,7 @@ export function MainHeader({navigation}){
             const userFirstName = await AsyncStorage.getItem('firstName');
             const userLastName = await AsyncStorage.getItem('lastName');
             //console.log(userProfileImageURI);
-            if(userProfileImageURI !== ''){
+            if(userProfileImageURI != '' && userProfileImageURI != null){
                 updateUriExists(true);
                 updateImage(userProfileImageURI);
             }
@@ -75,7 +75,7 @@ export function BackHeader({navigation}){
             const userFirstName = await AsyncStorage.getItem('firstName');
             const userLastName = await AsyncStorage.getItem('lastName');
             //console.log(userProfileImageURI);
-            if(userProfileImageURI !== ''){
+            if(userProfileImageURI != '' && userProfileImageURI != null){
                 updateUriExists(true);
                 updateImage(userProfileImageURI);
             }
