@@ -76,7 +76,7 @@ export default function ProfileScreen({navigation, route}){
             //save to Async & set to nav profile icon too
             storeProfileImage(selection.assets[0].uri);
         }else if(selection.canceled){
-            console.log('image selection canceled.')
+            console.log('image selection canceled.');
         }
     };
     //need to store image uri in a retrievable way, does not display on fresh load.
@@ -89,6 +89,16 @@ export default function ProfileScreen({navigation, route}){
         } catch (error) {
             //storing Image error
             console.log('error storing image uri: ', error);
+        }
+    };
+    const clearProfileImage = async () => {
+        console.log('clearing Image uri...');
+        try {
+            storeProfileImage('');
+            setAvatarImage('');
+        } catch (error) {
+            //clearing Image error
+            console.log('error clearing image uri: ', error);
         }
     };
     const storeOfflineStatus = async () => {
@@ -123,7 +133,7 @@ export default function ProfileScreen({navigation, route}){
             userOrderStatus ? (toggleOrderStatus(userOrderStatus)) : (toggleOrderStatus(true));
             userPasswordChanges ? (togglePasswordChanges(userPasswordChanges)) : (togglePasswordChanges(true));
             userSpecialOffers ? (toggleSpecialOffers(userSpecialOffers)) : (toggleSpecialOffers(true));
-            userNewsletter? (toggleNewsletter(userNewsletter)) : (toggleNewsletter(true));
+            userNewsletter ? (toggleNewsletter(userNewsletter)) : (toggleNewsletter(true));
             //console.log('notifications:[',userOrderStatus,userPasswordChanges,userSpecialOffers,userNewsletter,']');
             //console.log('user profile:', userFirstName, userLastName, userEmail, userPhone, userProfileImageURI)
         } catch (error) {
@@ -176,7 +186,8 @@ export default function ProfileScreen({navigation, route}){
                 <View style={styles.avatarSection}>
                     <Text style={styles.inputLabel}>Avatar</Text>
                     <View style={styles.buttonRow}>
-                        { image !== '' ?
+                        {console.log('|',image,'vs',avatarImage,'|')}
+                        { (image != '' && image != null) ?
                             (
                             <Image source={{uri: image}} 
                                 style={styles.avatarIcon} />
@@ -188,8 +199,8 @@ export default function ProfileScreen({navigation, route}){
                             )
                         }
                         <Pressable onPress={ () => {
-                                pickImage(),
-                                console.log('update Avatar icon:',image);
+                                console.log('update Avatar icon:',image),
+                                pickImage()
                                 }
                             }
                             style={styles.updateButton}
@@ -197,7 +208,9 @@ export default function ProfileScreen({navigation, route}){
                             <Text style={styles.updateButtonText}>Change</Text>
                         </Pressable>
                         <Pressable onPress={ () => {
-                                console.log('remove Avatar icon');
+                                console.log('remove Avatar icon'),
+                                clearProfileImage(),
+                                console.log(image,'&',avatarImage)
                                 }
                             }
                             style={styles.cancelButton}
@@ -358,7 +371,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'green',
+        backgroundColor: '#495E57',//'green',
     },
     main: {
         alignItems: 'flex-start',
@@ -404,7 +417,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         //alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'green',
+        backgroundColor: '#495E57',//'green',
     },
     profileInitials: {
         fontSize: 45,
