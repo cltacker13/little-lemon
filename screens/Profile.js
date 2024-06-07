@@ -49,15 +49,30 @@ export default function ProfileScreen({navigation, route}){
     }
 
     const updatePhoneFormat = () => {
-        let n = phone;
+        let n = '';
         let formated = '';
-        if(n !== '' && n.length == 15){
-            //+1(###)###-### 
-            if(n.charAt(0) !== '+'){
-                formated = `+1(${n.charAt(0)}${n.charAt(1)}${n.charAt(2)})${n.charAt(3)}${n.charAt(4)}${n.charAt(5)}-${n.charAt(6)}${n.charAt(7)}${n.charAt(8)}${n.charAt(9)}`; 
-                console.log('formated number:',formated);
-                onChangePhone(formated);
+        //console.log('phone.length',phone.length)
+        if(phone != '' && !isPhoneValid){
+            for(i=0;i<phone.length;i++){
+                //console.log(phone[i]);
+                var regex = /^[0-9]$/
+                if(regex.test(phone[i])){
+                    n += phone[i];
+                }
             }
+            //console.log('n.length:',n.length);
+            if(n.length == 10){
+                formated = `+1(${n.charAt(0)}${n.charAt(1)}${n.charAt(2)})${n.charAt(3)}${n.charAt(4)}${n.charAt(5)}-${n.charAt(6)}${n.charAt(7)}${n.charAt(8)}${n.charAt(9)}`;
+                onChangePhone(formated);
+                //console.log(isPhoneValid);
+            }
+            if(n.length == 11 && n.charAt(0) == '1'){
+                formated = `+${n.charAt(0)}(${n.charAt(1)}${n.charAt(2)}${n.charAt(3)})${n.charAt(4)}${n.charAt(5)}${n.charAt(6)}-${n.charAt(7)}${n.charAt(8)}${n.charAt(9)}${n.charAt(10)}`;
+                onChangePhone(formated);
+                //console.log(isPhoneValid);
+            }
+            //console.log('cleaned num',n,'|');
+            
         }else {
             Alert.alert('Phone Number is Invalid', 'Please enter 10 digit US phone number.')
         }
@@ -176,7 +191,10 @@ export default function ProfileScreen({navigation, route}){
 
 
     retrieveUserProfileData();
-    const initials = (fname.charAt(0)+lname.charAt(0));
+    let initials = fname.charAt(0)
+    if(lname != '' && lname != null){
+        initials = (fname.charAt(0)+lname.charAt(0));
+    }
 
     return (
         <ScrollView style={styles.container}>

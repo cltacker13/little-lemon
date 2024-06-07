@@ -22,11 +22,15 @@ export function MainHeader({navigation}){
             const userFirstName = await AsyncStorage.getItem('firstName');
             const userLastName = await AsyncStorage.getItem('lastName');
             //console.log(userProfileImageURI);
-            if(userProfileImageURI !== '' && userProfileImageURI !== null){
+            if(userProfileImageURI != '' && userProfileImageURI != null){
                 updateUriExists(true);
                 updateImage(userProfileImageURI);
             }
-            updateInitials(userFirstName.charAt(0)+userLastName.charAt(0));
+            if(userLastName != '' && userLastName != null){
+                updateInitials(userFirstName.charAt(0)+userLastName.charAt(0));
+            }else{
+                updateInitials(userFirstName.charAt(0));
+            }
         } catch (error) {
             console.log('retrieving header user data:', error)
         }
@@ -77,11 +81,15 @@ export function BackHeader({navigation}){
             const userFirstName = await AsyncStorage.getItem('firstName');
             const userLastName = await AsyncStorage.getItem('lastName');
             //console.log(userProfileImageURI);
-            if(userProfileImageURI !== '' && userProfileImageURI !== null){
+            if(userProfileImageURI != '' && userProfileImageURI != null){
                 updateUriExists(true);
                 updateImage(userProfileImageURI);
             }
-            updateInitials(userFirstName.charAt(0)+userLastName.charAt(0));
+            if(userLastName != '' && userLastName != null){
+                updateInitials(userFirstName.charAt(0)+userLastName.charAt(0));
+            }else{
+                updateInitials(userFirstName.charAt(0));
+            }
         } catch (error) {
             console.log('retrieving header user data error:', error)
         }
