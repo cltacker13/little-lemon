@@ -83,6 +83,7 @@ export default function CartScreen({navigation, route}){
         updateCartArr(cartList);
     }
 
+    //TODO fix bug: does not show new item after add more items.
     const retrieveCartItems = async () => {
         //remove items in cart, for testing
         //await AsyncStorage.removeItem('userCartItems');
