@@ -20,10 +20,11 @@ import CheckOutScreen from './screens/CheckOut.js';
 const Stack = createNativeStackNavigator();
 
 LogBox.ignoreLogs([   'Non-serializable values were found in the navigation state', 
-  ]);
+  'You started loading the font "Markazi", but used it before it finished loading. You need to wait for Font.loadAsync to complete before using the font.'
+]);
 
 export default function App() {
-  console.log('App:');
+  //console.log('App:');
   const [isLoading, updateIsLoading] = useState(true);  
   const [isLoggedIn, updateIsLoggedIn] = useState(false);
   const [fontsLoaded, fontError] = useFonts({

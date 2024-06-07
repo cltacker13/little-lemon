@@ -17,17 +17,27 @@ export default function ProfileScreen({navigation, route}){
     const [lname, updateLname] = useState('');
     const [mail, updateMail] = useState('');
     const [num, updateNum] = useState('');
+    const [not1, updateNot1] = useState('');
+    const [not2, updateNot2] = useState('');
+    const [not3, updateNot3] = useState('');
+    const [not4, updateNot4] = useState('');
+    /*const [notifications, updateNotifications] = useState(
+        {orderStatus: true, passwordChanges: true, 
+        specialOffers: true, newsletter: true});*/
+    /*let notifications = {orderStatus: true, passwordChanges: true, 
+        specialOffers: true, newsletter: true};*/
     //console.log('at load retrieved:',fname,lname,mail,num,image);
+    //console.log('at load retrieved:',notifications);
     //form edits
     const [firstName, onChangeFirstName] = useState(fname);
     const [lastName, onChangeLastName] = useState(lname);
     const [email, onChangeEmail] = useState(mail);
     const [phone, onChangePhone] = useState(num);
     //console.log('at load form:',firstName,lastName,email,phone);
-    const [orderStatus, toggleOrderStatus] = useState(true);
-    const [passwordChanges, togglePasswordChanges] = useState(true);
-    const [specialOffers, toggleSpecialOffers] = useState(true);
-    const [newsletter, toggleNewsletter] = useState(true);
+    const [orderStatus, toggleOrderStatus] = useState(not1);
+    const [passwordChanges, togglePasswordChanges] = useState(not2);
+    const [specialOffers, toggleSpecialOffers] = useState(not3);
+    const [newsletter, toggleNewsletter] = useState(not4);
     //form validation toggles save button option
     const isFirstNameValid = (firstName != '' ? validateName(firstName) : validateName(fname));
     const isLastNameValid = (lastName != '' ? validateName(lastName) : validateName(lname));
@@ -49,15 +59,30 @@ export default function ProfileScreen({navigation, route}){
     }
 
     const updatePhoneFormat = () => {
-        let n = phone;
+        let n = '';
         let formated = '';
-        if(n !== '' && n.length == 15){
-            //+1(###)###-### 
-            if(n.charAt(0) !== '+'){
-                formated = `+1(${n.charAt(0)}${n.charAt(1)}${n.charAt(2)})${n.charAt(3)}${n.charAt(4)}${n.charAt(5)}-${n.charAt(6)}${n.charAt(7)}${n.charAt(8)}${n.charAt(9)}`; 
-                //console.log('formated number:',formated);
-                onChangePhone(formated);
+        //console.log('phone.length',phone.length)
+        if(phone != '' && !isPhoneValid){
+            for(i=0;i<phone.length;i++){
+                //console.log(phone[i]);
+                var regex = /^[0-9]$/
+                if(regex.test(phone[i])){
+                    n += phone[i];
+                }
             }
+            //console.log('n.length:',n.length);
+            if(n.length == 10){
+                formated = `+1(${n.charAt(0)}${n.charAt(1)}${n.charAt(2)})${n.charAt(3)}${n.charAt(4)}${n.charAt(5)}-${n.charAt(6)}${n.charAt(7)}${n.charAt(8)}${n.charAt(9)}`;
+                onChangePhone(formated);
+                //console.log(isPhoneValid);
+            }
+            if(n.length == 11 && n.charAt(0) == '1'){
+                formated = `+${n.charAt(0)}(${n.charAt(1)}${n.charAt(2)}${n.charAt(3)})${n.charAt(4)}${n.charAt(5)}${n.charAt(6)}-${n.charAt(7)}${n.charAt(8)}${n.charAt(9)}${n.charAt(10)}`;
+                onChangePhone(formated);
+                //console.log(isPhoneValid);
+            }
+            //console.log('cleaned num',n,'|');
+            
         }else {
             Alert.alert('Phone Number is Invalid', 'Please enter 10 digit US phone number.')
         }
@@ -106,7 +131,8 @@ export default function ProfileScreen({navigation, route}){
     const storeOfflineStatus = async () => {
         //console.log('clearing data...');
         try {
-            await AsyncStorage.setItem('userLoggedIn','false');
+            await AsyncStorage.clear();
+            //await AsyncStorage.setItem('userLoggedIn','false');
         } catch (error) {
             //clearing error
             console.log('clearing data error: ', error);
@@ -131,12 +157,18 @@ export default function ProfileScreen({navigation, route}){
             updateFname(userFirstName); 
             updateLname(userLastName);
             updateMail(userEmail);
-            userPhone ? (updateNum(userPhone)) : updateNum('+1(###)###-###');
-            userOrderStatus ? (toggleOrderStatus(userOrderStatus)) : (toggleOrderStatus(true));
-            userPasswordChanges ? (togglePasswordChanges(userPasswordChanges)) : (togglePasswordChanges(true));
-            userSpecialOffers ? (toggleSpecialOffers(userSpecialOffers)) : (toggleSpecialOffers(true));
-            userNewsletter? (toggleNewsletter(userNewsletter)) : (toggleNewsletter(true));
-            //console.log('notifications:[',userOrderStatus,userPasswordChanges,userSpecialOffers,userNewsletter,']');
+            userPhone ? (updateNum(userPhone)) : updateNum('');//+1(###)###-###
+            userOrderStatus == 'false' ? (updateNot1(false)) : (toggleOrderStatus(true));
+            userPasswordChanges == 'false' ? (updateNot2(false)) : (togglePasswordChanges(true));
+            userSpecialOffers == 'false' ? (updateNot3(false)) : (toggleSpecialOffers(true));
+            userNewsletter == 'false' ? (updateNot4(false)) : (toggleNewsletter(true));
+            /*updateNotifications({orderStatus: userOrderStatus, passwordChanges: userPasswordChanges, 
+                    specialOffers: userSpecialOffers, newsletter: userNewsletter});*/
+            //userOrderStatus ? (updateNotifications({orderStatus: userOrderStatus})) : (orderStatus);
+            //userPasswordChanges ? (togglePasswordChanges({passwordChanges: userPasswordChanges})) : (passwordChanges);
+            //userSpecialOffers ? (toggleSpecialOffers({specialOffers: userSpecialOffers})) : (specialOffers);
+            //userNewsletter? (toggleNewsletter({newsletter: userNewsletter})) : (newsletter);
+            console.log('notifications:[',userOrderStatus,userPasswordChanges,userSpecialOffers,userNewsletter,']',not1,not2,not3,not4);
             //console.log('user profile:', userFirstName, userLastName, userEmail, userPhone, userProfileImageURI)
         } catch (error) {
             console.log('retrieving user profile data error:', error)
@@ -174,11 +206,18 @@ export default function ProfileScreen({navigation, route}){
         onChangeLastName(lname);
         onChangeEmail(mail);
         onChangePhone(num);
+        toggleOrderStatus(not1);
+        togglePasswordChanges(not2);
+        toggleSpecialOffers(not3);
+        toggleNewsletter(not4);
     }
 
 
     retrieveUserProfileData();
-    const initials = (fname.charAt(0)+lname.charAt(0));
+    let initials = fname.charAt(0)
+    if(lname != '' && lname != null){
+        initials = (fname.charAt(0)+lname.charAt(0));
+    }
 
     return (
         <ScrollView style={styles.container}>
@@ -253,7 +292,7 @@ export default function ProfileScreen({navigation, route}){
                         style={styles.inputBox}
                         value={phone == '' ? num : phone}
                         onChangeText={onChangePhone}
-                        placeholder={'Type your phone number'}
+                        placeholder={'Type your US phone number'}
                         keyboardType="phone-pad"
                         textContentType="telephoneNumber"
                         onEndEditing={updatePhoneFormat}
@@ -261,7 +300,7 @@ export default function ProfileScreen({navigation, route}){
                     <Text style={styles.h2}>Email Notifications</Text>
                     <View style={styles.checkboxRow}>
                         <CheckBox
-                            value={orderStatus}
+                            value={not1 == false ? not1 : orderStatus}
                             onValueChange={toggleOrderStatus}
                             color={'#495E57'}
                             style={styles.checkbox}
@@ -270,7 +309,7 @@ export default function ProfileScreen({navigation, route}){
                     </View>
                     <View style={styles.checkboxRow}>
                         <CheckBox
-                            value={passwordChanges}
+                            value={not2 == false ? not2 : passwordChanges}
                             onValueChange={togglePasswordChanges}
                             color={'#495E57'}
                             style={styles.checkbox}
@@ -279,7 +318,7 @@ export default function ProfileScreen({navigation, route}){
                     </View>
                     <View style={styles.checkboxRow}>
                         <CheckBox
-                            value={specialOffers}
+                            value={not3 == false ? not3 : specialOffers}
                             onValueChange={toggleSpecialOffers}
                             color={'#495E57'}
                             style={styles.checkbox}

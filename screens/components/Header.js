@@ -24,7 +24,11 @@ export function MainHeader({navigation}){
                 updateUriExists(true);
                 updateImage(userProfileImageURI);
             }
-            updateInitials(userFirstName.charAt(0)+userLastName.charAt(0));
+            if(userLastName != '' && userLastName != null){
+                updateInitials(userFirstName.charAt(0)+userLastName.charAt(0));
+            }else{
+                updateInitials(userFirstName.charAt(0));
+            }
         } catch (error) {
             console.log('retrieving header user data:', error)
         }
@@ -79,7 +83,11 @@ export function BackHeader({navigation}){
                 updateUriExists(true);
                 updateImage(userProfileImageURI);
             }
-            updateInitials(userFirstName.charAt(0)+userLastName.charAt(0));
+            if(userLastName != '' && userLastName != null){
+                updateInitials(userFirstName.charAt(0)+userLastName.charAt(0));
+            }else{
+                updateInitials(userFirstName.charAt(0));
+            }
         } catch (error) {
             console.log('retrieving header user data error:', error)
         }
