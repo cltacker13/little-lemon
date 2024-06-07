@@ -17,15 +17,10 @@ export default function ProfileScreen({navigation, route}){
     const [lname, updateLname] = useState('');
     const [mail, updateMail] = useState('');
     const [num, updateNum] = useState('');
-    const [not1, updateNot1] = useState('');
-    const [not2, updateNot2] = useState('');
-    const [not3, updateNot3] = useState('');
-    const [not4, updateNot4] = useState('');
-    /*const [notifications, updateNotifications] = useState(
-        {orderStatus: true, passwordChanges: true, 
-        specialOffers: true, newsletter: true});*/
-    /*let notifications = {orderStatus: true, passwordChanges: true, 
-        specialOffers: true, newsletter: true};*/
+    const [not1, updateNot1] = useState(true);
+    const [not2, updateNot2] = useState(true);
+    const [not3, updateNot3] = useState(true);
+    const [not4, updateNot4] = useState(true);
     //console.log('at load retrieved:',fname,lname,mail,num,image);
     //console.log('at load retrieved:',notifications);
     //form edits
@@ -34,6 +29,8 @@ export default function ProfileScreen({navigation, route}){
     const [email, onChangeEmail] = useState(mail);
     const [phone, onChangePhone] = useState(num);
     //console.log('at load form:',firstName,lastName,email,phone);
+    //console.log('initial notifications:',not1,not2,not3,not4)
+    //TODO fix bug: not# values do not load from Async correctly on initial load.
     const [orderStatus, toggleOrderStatus] = useState(not1);
     const [passwordChanges, togglePasswordChanges] = useState(not2);
     const [specialOffers, toggleSpecialOffers] = useState(not3);
@@ -158,17 +155,13 @@ export default function ProfileScreen({navigation, route}){
             updateLname(userLastName);
             updateMail(userEmail);
             userPhone ? (updateNum(userPhone)) : updateNum('');//+1(###)###-###
-            userOrderStatus == 'false' ? (updateNot1(false)) : (toggleOrderStatus(true));
-            userPasswordChanges == 'false' ? (updateNot2(false)) : (togglePasswordChanges(true));
-            userSpecialOffers == 'false' ? (updateNot3(false)) : (toggleSpecialOffers(true));
-            userNewsletter == 'false' ? (updateNot4(false)) : (toggleNewsletter(true));
-            /*updateNotifications({orderStatus: userOrderStatus, passwordChanges: userPasswordChanges, 
-                    specialOffers: userSpecialOffers, newsletter: userNewsletter});*/
-            //userOrderStatus ? (updateNotifications({orderStatus: userOrderStatus})) : (orderStatus);
-            //userPasswordChanges ? (togglePasswordChanges({passwordChanges: userPasswordChanges})) : (passwordChanges);
-            //userSpecialOffers ? (toggleSpecialOffers({specialOffers: userSpecialOffers})) : (specialOffers);
-            //userNewsletter? (toggleNewsletter({newsletter: userNewsletter})) : (newsletter);
-            console.log('notifications:[',userOrderStatus,userPasswordChanges,userSpecialOffers,userNewsletter,']',not1,not2,not3,not4);
+            //console.log(typeof userNewsletter, userNewsletter, typeof not4, not4, typeof newsletter, newsletter)
+            //console.log('notifications1:[',userOrderStatus,userPasswordChanges,userSpecialOffers,userNewsletter,'][',not1,not2,not3,not4,']');
+            userOrderStatus ? (userOrderStatus == 'false' ? updateNot1(false) : updateNot1(true)) : (updateNot1(true));
+            userPasswordChanges ? (userPasswordChanges == 'false' ? updateNot2(false) : updateNot2(true)) : (updateNot2(true));
+            userSpecialOffers ? (userSpecialOffers == 'false' ? updateNot3(false) : updateNot3(true)) : (updateNot3(true));
+            userNewsletter ? (userNewsletter == 'false' ? updateNot4(false) : updateNot4(true)) : (updateNot4(true));
+            //console.log('updated not#s:[',not1,not2,not3,not4,']');
             //console.log('user profile:', userFirstName, userLastName, userEmail, userPhone, userProfileImageURI)
         } catch (error) {
             console.log('retrieving user profile data error:', error)
@@ -190,7 +183,6 @@ export default function ProfileScreen({navigation, route}){
                 await AsyncStorage.setItem('newsletter', `${newsletter}`);
                 
                 Alert.alert('Updated','Changes have been saved.');
-                
             } catch (error) {
                 console.log('error storing user profile data:', error)
             }
@@ -300,7 +292,7 @@ export default function ProfileScreen({navigation, route}){
                     <Text style={styles.h2}>Email Notifications</Text>
                     <View style={styles.checkboxRow}>
                         <CheckBox
-                            value={not1 == false ? not1 : orderStatus}
+                            value={orderStatus}
                             onValueChange={toggleOrderStatus}
                             color={'#495E57'}
                             style={styles.checkbox}
@@ -309,7 +301,7 @@ export default function ProfileScreen({navigation, route}){
                     </View>
                     <View style={styles.checkboxRow}>
                         <CheckBox
-                            value={not2 == false ? not2 : passwordChanges}
+                            value={passwordChanges}
                             onValueChange={togglePasswordChanges}
                             color={'#495E57'}
                             style={styles.checkbox}
@@ -318,7 +310,7 @@ export default function ProfileScreen({navigation, route}){
                     </View>
                     <View style={styles.checkboxRow}>
                         <CheckBox
-                            value={not3 == false ? not3 : specialOffers}
+                            value={specialOffers}
                             onValueChange={toggleSpecialOffers}
                             color={'#495E57'}
                             style={styles.checkbox}
